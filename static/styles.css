@@ -1,0 +1,42 @@
+
+:root {
+    --pink: #9381FF;
+    --purple: #584D99;
+    --dark-purple: #1D1A33;
+    --white: #FFFFFC;
+}
+
+.header {
+    font-size: 40px;
+    color: var(--white);
+    font-family: "Rubik", sans-serif;
+    font-weight: 300;
+    height: 135px;
+    max-width: 100%;
+    background-image: linear-gradient(var(--purple), var(--pink));
+    box-shadow: 0px 4px 4px rgb(0, 0, 0, 25%);
+    display: flex;
+    align-items: center;
+}
+
+.navbar {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: flex-end;
+   max-height: max-content;
+}
+
+.login-signup-button {
+    background-image: linear-gradient(to right, var(--purple), var(--dark-purple));
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 75px;
+    max-width: 100%;
+
+}
+
+.login-signup-nav {
+    
+}
