@@ -32,8 +32,14 @@ def index():
 
 @app.route("/login")
 def login():
+    # Forget user info
+    session.clear()
+
     return render_template("login.html")
 
 @app.route("/signup")
 def signup():
+
+    session.clear()
+
     return render_template("signup.html")

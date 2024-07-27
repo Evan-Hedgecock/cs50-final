@@ -2,25 +2,32 @@
 :root {
     --pink: #9381FF;
     --purple: #584d99;
+    --purple50: #584d9980;
+    --purple20: #584d9930;
     --dark-purple: #1D1A33;
     --white: #FFFFFC;
     --white50: #FFFFFC80;
-    --purple50: #584d9980;
+    
     --pink50: #9381FF80;
     --dark-purple50: #1D1A3380;
 
-    --h1-font: "Rubik", sans-serif;
+    --font: "Rubik", sans-serif;
+
     --h1-size: 64px;
     --h1-weight: 300;
     --h1-color-primary: black;
 
     --h2-size: 40px;
 
+    --button-size: 36px;
+
     --button-curve: 23px;
 
-    --input-curve: 15;
+    --input-curve: 15px;
 
     --sm-shadow: 0px 4px 4px rgb(0, 0, 0, 25%);
+    --md-shadow: 0px 8px 8px rgb(0, 0, 0, 25%);
+
 }
 
 body {
@@ -67,7 +74,7 @@ body {
     text-decoration: none;
     color: var(--white);
     font-size: var(--h1-font);
-    font-family: var(--h1-font);
+    font-family: var(--font);
     font-weight: var(--h1-weight);
 }
 
@@ -97,16 +104,26 @@ body {
 }
 
 .h1 {
-    font-family: var(--h1-font);
+    font-family: var(--font);
     font-size: var(--h1-size);
     font-weight: var(--h1-weight);
     color: var(--h1-color-primary);
 }
 
 .login {
+    margin: auto;
+}
+
+.signup {
+    margin: auto;
+}
+
+.signup.form {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-sizing: border-box;
+    height: auto;
 }
 
 .center-items {
@@ -114,3 +131,58 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    box-sizing: border-box;
+    margin-top: 30px;
+}
+
+.text-box {
+    background-image: linear-gradient(to right, var(--pink), var(--purple20));
+    color: white;
+    font-family: var(--font);
+    font-weight: var(--h1-weight);
+    font-size: var(--h2-size);
+    height: auto;
+    width: 48%;
+    margin-bottom: 20px;
+    border-radius: var(--input-curve);
+    padding: 10px 0px 10px 20px;
+    box-shadow: var(--sm-shadow);
+    box-sizing: border-box;
+    border: hidden;
+    outline: none;
+}
+
+.text-box::placeholder {
+    opacity: 1;
+}
+
+.text-box:focus {
+    background-image: linear-gradient(to right, var(--pink), var(--pink));
+    outline: none;
+}
+
+.button {
+    background-image: linear-gradient(to bottom, var(--pink), var(--purple));
+    box-shadow: var(--sm-shadow);
+    color: var(--white);
+    font-family: var(--font);
+    font-size: var(--button-size);
+    font-weight: 400;
+    border-radius: var(--button-curve);
+    padding: 15px 45px;
+    border: hidden;
+    transition: padding .5s;
+}
+
+.button:hover {
+    cursor: pointer;
+    padding: 15px 55px
+}
+
