@@ -1,22 +1,45 @@
 
 :root {
     --pink: #9381FF;
-    --purple: #584D99;
+    --purple: #584d99;
     --dark-purple: #1D1A33;
     --white: #FFFFFC;
+    --white50: #FFFFFC80;
+    --purple50: #584d9980;
+    --pink50: #9381FF80;
+    --dark-purple50: #1D1A3380;
+
+    --h1-font: "Rubik", sans-serif;
+    --h1-size: 64px;
+    --h1-weight: 300;
+    --h1-color-primary: black;
+
+    --h2-size: 40px;
+
+    --button-curve: 23px;
+
+    --input-curve: 15;
+
+    --sm-shadow: 0px 4px 4px rgb(0, 0, 0, 25%);
+}
+
+body {
+    margin: 0px;
 }
 
 .header {
-    font-size: 40px;
-    color: var(--white);
-    font-family: "Rubik", sans-serif;
-    font-weight: 300;
+    font-size: var(--h2-size);
     height: 135px;
-    max-width: 100%;
+    width: 100%;
     background-image: linear-gradient(var(--purple), var(--pink));
-    box-shadow: 0px 4px 4px rgb(0, 0, 0, 25%);
+    box-shadow: var(--sm-shadow);
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+}
+
+.login-header {
+    justify-content: end;
 }
 
 .navbar {
@@ -28,15 +51,66 @@
 }
 
 .login-signup-button {
-    background-image: linear-gradient(to right, var(--purple), var(--dark-purple));
+    background-image: linear-gradient(to right, var(--purple50), var(--dark-purple50));
     display: flex;
     flex-direction: row;
     align-items: center;
     height: 75px;
-    max-width: 100%;
-
+    width: 370px;
+    justify-content: space-evenly;
+    text-align: center;
+    border-radius: var(--button-curve);
+    margin-right: 50px;
 }
 
-.login-signup-nav {
-    
+.nav-link {
+    text-decoration: none;
+    color: var(--white);
+    font-size: var(--h1-font);
+    font-family: var(--h1-font);
+    font-weight: var(--h1-weight);
+}
+
+.active-login-signup {
+    background-image: linear-gradient(to bottom, var(--pink), var(--purple));
+    border-radius: var(--button-curve);
+}
+
+.inactive-login-signup {
+    color: var(--white50)
+}
+
+.nav-button {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome {
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+}
+
+.h1 {
+    font-family: var(--h1-font);
+    font-size: var(--h1-size);
+    font-weight: var(--h1-weight);
+    color: var(--h1-color-primary);
+}
+
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
