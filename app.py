@@ -59,20 +59,25 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 # TODO make login required
 def index():
     """Show each section overview, homepage"""
     return render_template("index.html")
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    # Forget user info
     session.clear()
+    print(f"Request method: {request.method}")
+    if request.method == "POST":
+        print("posted")
+        return redirect("/")
+    # Forget user info
+
 
     return render_template("login.html")
 
-@app.route("/signup", methods = ["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
 
     session.clear()
