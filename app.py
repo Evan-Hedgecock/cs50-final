@@ -24,6 +24,8 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 Session(app)
 
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Configure SQL database
 class Base(DeclarativeBase):
@@ -70,12 +72,40 @@ def login():
     session.clear()
     print(f"Request method: {request.method}")
     if request.method == "POST":
-        print("posted")
-        return redirect("/")
-    # Forget user info
+        
+        if not request.form.get("username"):
+            flash("Enter username", "danger")
+            return redirect("/login")
+        elif not request.form.get("password"):
+            flash("Enter password", "danger")
+            return redirect("/login")
+        
+        username = request.form.get("username")
+        entered_password = request.form.get("password")
+        result = db.session.execute(select(User).where(User.username == username))
+        copies = 0
+        username_real = False
+        for user_obj in  result.scalars():
+            if username == user_obj.username:
+                # Username exists
+                username_real = True
+                copies += 1
+        if not username_real:
+            flash("Username doesn't exist", "danger")
+            return redirect("/login")
+        hash = db.session.scalar(select(User.password).where(User.username == username))
 
+        if username_real and copies == 1 and check_password_hash(hash, entered_password):
+            session["user_id"] = db.session.scalar(select(User.id).where(User.username == username and User.password == hash))
+            print(f"user id = {session["user_id"]}")
+            return redirect("/")
+        else:
+            flash("Password incorrect", "danger")
+            return redirect("/login")
 
-    return render_template("login.html")
+    else:
+        return render_template("login.html")
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
