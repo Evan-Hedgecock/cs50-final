@@ -5,14 +5,17 @@
 <a class="nav-link nav-button active-login-signup flex-center" href="/signup">Sign up</a>
 {% endblock %}
 
-{% block main %}
 
+{% block welcome %}
 <div class="welcome">
     <h1 class="h1">Hello! I'm glad you're here</h1>
 </div>
+{% endblock %}
+
+{% block main %}
 
 <div class="signup">
-    <form class="form" action="/login" method="post">
+    <form class="form" action="/signup" method="post">
         <input type="text" class="text-box" id="username" name="username" placeholder="Username">
         <input type="text" class="text-box" id="name" name="name" placeholder="First name">  
         <input type="password" class="text-box" id="password" name="password" placeholder="Password">

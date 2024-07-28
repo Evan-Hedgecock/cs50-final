@@ -28,6 +28,20 @@
         </nav>
     </div>
 
+    {% block welcome %}{% endblock %}
+
+    {% with messages = g.flashed_messages %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="alert alert-{{ category }} h3" role="alert">
+                    {{ message }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     {% block main %}{% endblock %}
     
 </body>

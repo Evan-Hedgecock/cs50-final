@@ -5,11 +5,14 @@
 <a class="nav-link nav-button inactive-login-signup" href="/signup">Sign up</a>
 {% endblock %}
 
-{% block main %}
+{% block welcome %}
 <div class="welcome">
     <h1 class="h1">Welcome back to Wisp!</h1>
 </div>
+{% endblock %}
 
+
+{% block main %}
 <div class="login">
     <form class="form" action="/login" method="post">
         <input type="text" class="text-box" id="username" name="username" placeholder="Username">      
