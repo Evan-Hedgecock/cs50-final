@@ -70,9 +70,6 @@ def login():
     # Forget user info
     session.clear()
 
-    if request.method == "POST":
-        
-
     return render_template("login.html")
 
 @app.route("/signup", methods = ["GET", "POST"])
