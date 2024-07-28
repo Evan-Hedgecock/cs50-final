@@ -69,6 +69,21 @@ def index():
     """Show each section overview, homepage"""
     return render_template("index.html")
 
+@app.route("/loans", methods=["GET", "POST"])
+@login_required
+def loans():
+    return render_template("loans.html")
+
+@app.route("/budget", methods=["GET", "POST"])
+@login_required
+def budget():
+    return render_template("budget.html")
+
+@app.route("/progress", methods=["GET", "POST"])
+@login_required
+def progress():
+    return render_template("progress.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     session.clear()

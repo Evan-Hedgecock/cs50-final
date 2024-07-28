@@ -39,6 +39,11 @@ body {
 
 a {
     text-decoration: none;
+    color: var(--white);
+}
+
+.active-nav a {
+    color: #00000080;
 }
 
 .flex-center {
@@ -251,6 +256,7 @@ a {
 
 .active-nav {
     padding: 10px 0px;
+    color: #00000080;
     background-image: linear-gradient(to bottom, var(--purple50), var(--pink50));
     border-radius: var(--button-curve);
     box-shadow: var(--sm-shadow);
