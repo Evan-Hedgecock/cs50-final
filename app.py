@@ -67,7 +67,9 @@ def after_request(response):
 @login_required
 def index():
     """Show each section overview, homepage"""
-    return render_template("index.html")
+    if request.method == "GET":
+        name = db.session.execute(select(User.name).where(session["user_id"] == User.id)).scalar()
+    return render_template("index.html", name=name)
 
 @app.route("/loans", methods=["GET", "POST"])
 @login_required

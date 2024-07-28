@@ -13,7 +13,7 @@
 
     --font: "Rubik", sans-serif;
 
-    --h1-size: 64px;
+    --h1-size: 48px;
     --h1-weight: 300;
     --h1-color-primary: black;
 
@@ -56,7 +56,6 @@ a {
     font-family: var(--font);
     font-size: var(--h1-size);
     font-weight: var(--h1-weight);
-    color: var(--h1-color-primary);
 }
 
 .h2 {
@@ -70,7 +69,7 @@ a {
     font-family: var(--font);
     font-size: var(--h3-size);
     font-weight: var(--h2-weight);
-    color: black;
+    color: var(--white);
 }
 
 .color-white {
@@ -299,4 +298,95 @@ a {
     border-radius: var(--button-curve);
     padding: 5px 10px;
     box-shadow: var(--sm-shadow);
+}
+
+.pt-50 {
+    padding-top: 50px
+}
+
+.mw-50 {
+    max-width: 50%;
+    height: auto;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.bold {
+    font-weight: 400;
+}
+
+.card-primary {
+    background-image: linear-gradient(to bottom, var(--purple), var(--pink));
+    color: var(--white);
+}
+
+.card-container {
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    padding-top: 20px;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0px;
+    flex-direction: column;
+}
+
+.card-primary {
+    flex-direction: column;
+    justify-content: start;
+    width: 430px;
+    height: 480px;
+    margin: 10px;
+    border-radius: var(--input-curve);
+    box-shadow: var(--md-shadow);
+}
+
+.menu-button {
+    background-color: var(--pink);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    text-align: center;
+    width: 385px;
+    max-height: 100%;
+    margin: 10px 0px;
+    border-radius: var(--button-curve);
+    box-shadow: var(--sm-shadow);
+    font-weight: 400;
+    transition: box-shadow .5s, text-shadow .5s;
+}
+
+@keyframes button-hover {
+    from {width: 385px;}
+    to {width: 450px;}
+
+    from {box-shadow: var(--sm-shadow);}
+    to {box-shadow: var(--md-shadow);}
+
+    /* from {text-shadow: none;}
+    to {text-shadow: var(--sm-shadow);} */
+}
+.menu-button:hover {
+    background-image: linear-gradient(to top, var(--pink), var(--purple));
+    /* box-shadow: var(--md-shadow);
+    text-shadow: var(--sm-shadow); */
+    animation-name: button-hover;
+    animation-iteration-count: infinite;
+    animation-duration: .75s;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 20px;
+}
+
+.card-title {
+    padding-top: 10px;
+    margin-bottom: 0px;
 }
