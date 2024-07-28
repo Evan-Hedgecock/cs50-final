@@ -15,8 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
     <title>Wisp: {% block title %}{% endblock %}</title>
-
-    {% block script %}{% endblock %}
+    <script>
+        function dropDown() {
+                document.getElementById("profile-dropdown").classList.toggle("show");
+                document.getElementById("profile-button").classList.toggle("ignore")
+            }
+    </script>
 </head>
 
 <body>
