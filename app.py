@@ -10,6 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.exc import IntegrityError
 
+from helpers import login_required
+
 load_dotenv()
 
 # Configure app
@@ -62,7 +64,7 @@ def after_request(response):
     return response
 
 @app.route("/", methods=["GET", "POST"])
-# TODO make login required
+@login_required
 def index():
     """Show each section overview, homepage"""
     return render_template("index.html")
