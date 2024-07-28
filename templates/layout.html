@@ -21,14 +21,11 @@
     {% if session["user_id"] %} 
     <div class="header flex-center">    
     {% else %}
-    <div class="header login-header flex-center">
-         
-    {% endif %}
+    <div class="header login-header flex-center"> 
+    {% endif %}  
+
+    {% block header %}{% endblock %}  
            
-                    {% block header %}{% endblock %}
-                </div>
-            </div>
-        </nav>
     </div>
 
     {% block welcome %}{% endblock %}
