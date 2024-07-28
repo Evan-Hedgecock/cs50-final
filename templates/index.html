@@ -1,12 +1,40 @@
 {% extends "layout.html" %}
 
+{% block script %}
+<script>
+    function dropDown() {
+            document.getElementById("profile-dropdown").classList.toggle("show");
+            document.getElementById("profile-button").classList.toggle("ignore")
+        }
+</script>
+{% endblock %}
+
 {% block header %}
-<ul class="nav-list">
-    <li class="nav-item">
-        <a class="nav-link" href="/">home</a>
+    <ul class="nav-list flex-center">
+    <li class="nav-item flex-center active-nav">
+        <a href="/" class="nav-link color-black50">Home</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/signout">Sign out</a>
+    <li class="nav-item flex-center">
+        <a href="/loans" class="nav-link color-white">Loans</a>
+    </li>
+    <li class="nav-item flex-center">
+        <a href="/budget" class="nav-link color-white">Budget</a>
+    </li>
+    <li class="nav-item flex-center">
+        <a href="/progress" class="nav-link color-white">Progress</a>
+    </li>
+    <li id="profile-button">
+        <div class="dropdown flex-center">
+            <button onclick="dropDown()" class="dropdown-button flex-center">
+                <svg width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M26.5 0C11.925 0 0 11.925 0 26.5C0 41.075 11.925 53 26.5 53C41.075 53 53 41.075 53 26.5C53 11.925 41.075 0 26.5 0ZM26.5 8.83333C31.3583 8.83333 35.3333 13.6917 35.3333 19.875C35.3333 26.0583 31.3583 30.9167 26.5 30.9167C21.6417 30.9167 17.6667 26.0583 17.6667 19.875C17.6667 13.6917 21.6417 8.83333 26.5 8.83333ZM41.075 43.0625C37.3208 46.375 32.0208 48.5833 26.5 48.5833C20.9792 48.5833 15.6792 46.375 11.925 43.0625C11.0417 42.1792 10.8208 40.8542 11.7042 39.9708C14.1333 37.1 17.4458 35.1125 20.9792 34.0083C22.7458 34.8917 24.5125 35.3333 26.5 35.3333C28.4875 35.3333 30.2542 34.8917 32.0208 34.0083C35.775 35.1125 38.8667 37.1 41.2958 39.9708C42.1792 40.8542 42.1792 42.1792 41.075 43.0625Z" fill="#FFFFFC"/>
+                </svg> 
+            </button>
+            <div id="profile-dropdown" class="dropdown-content flex-center">
+                <a href="/account" class="dropdown-link h3 color-white">Account</a>
+                <a href="/signout" class="dropdown-link h3 color-white">Sign out</a>
+            </div>
+        </div>
     </li>
 </ul>
 {% endblock %}

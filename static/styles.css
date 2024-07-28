@@ -37,6 +37,10 @@ body {
     margin: 0px;
 }
 
+a {
+    text-decoration: none;
+}
+
 .flex-center {
     display: flex;
     align-items: center;
@@ -64,6 +68,14 @@ body {
     color: black;
 }
 
+.color-white {
+    color: var(--white);
+}
+
+.color-black50 {
+    color: #00000080;
+}
+
 .header {
     font-size: var(--h2-size);
     height: 135px;
@@ -75,14 +87,6 @@ body {
 
 .login-header {
     justify-content: end;
-}
-
-.navbar {
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   justify-content: flex-end;
-   max-height: max-content;
 }
 
 .login-signup-button {
@@ -98,12 +102,21 @@ body {
     margin-right: 50px;
 }
 
+.nav-list {
+    width: 100%;
+    justify-content: space-evenly;
+    box-sizing: border-box;
+    padding-left: 0;
+    list-style-type: none;
+}
+
 .nav-link {
-    text-decoration: none;
-    color: var(--white);
-    font-size: var(--h1-font);
+    font-size: var(--h2-size);
     font-family: var(--font);
     font-weight: var(--h1-weight);
+    width: 225px;
+    height: auto;
+    text-align: center;
 }
 
 .active-login-signup {
@@ -130,8 +143,6 @@ body {
     align-items: center;
     padding-top: 100px;
 }
-
-
 
 .login {
     margin: auto;
@@ -228,4 +239,58 @@ body {
 
 .alert-danger {
     background-color: #ff000080;
+}
+
+.nav-list li:not(.active-nav):not(.ignore):hover {
+    padding: 10px 0px;
+    background-image: linear-gradient(to bottom, var(--purple), var(--pink));
+    border-radius: var(--button-curve);
+    cursor: pointer;
+    box-shadow: var(--sm-shadow);
+}
+
+.active-nav {
+    padding: 10px 0px;
+    background-image: linear-gradient(to bottom, var(--purple50), var(--pink50));
+    border-radius: var(--button-curve);
+    box-shadow: var(--sm-shadow);
+}
+
+.dropdown-button {
+    background-color: #00000000;
+    cursor: pointer;
+    padding: 5px 15px;
+    border: none;
+}
+
+.dropdown {
+    justify-content: space-between;
+}
+
+.dropdown-content {
+    display: none;
+    flex-flow: row;
+    background-color: var(--pink50);
+    padding: 5px;
+    margin: 5px 5px 5px 10px;
+    min-width: 200px;
+    z-index: 1;
+    border-radius: var(--button-curve);
+    box-shadow: var(--md-shadow);
+}
+
+.dropdown-content.show {
+    display: flex;
+}
+
+.dropdown-link {
+    padding: 5px 10px;
+    margin: 5px 10px;
+}
+
+.dropdown-link:hover {
+    background-image: linear-gradient(to bottom, var(--purple50), var(--pink50));
+    border-radius: var(--button-curve);
+    padding: 5px 10px;
+    box-shadow: var(--sm-shadow);
 }
