@@ -1,10 +1,16 @@
 {% extends "layout.html" %}
 
 {% block header %}
-<a class="nav-link nav-button active-login-signup" href="/login">Login</a>
-<a class="nav-link nav-button inactive-login-signup" href="/signup">Sign up</a>
+<nav> 
+    <div class="login-nav">
+        <div class="login-signup-button">
+            <a class="nav-link nav-button active-login-signup" href="/login">Login</a>
+            <a class="nav-link nav-button inactive-login-signup" href="/signup">Sign up</a>
+        </div>
+    </div>
+</nav>
 {% endblock %}
-
+            
 {% block welcome %}
 <div class="welcome">
     <h1 class="h1">Welcome back to Wisp!</h1>

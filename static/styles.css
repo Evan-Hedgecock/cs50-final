@@ -37,6 +37,12 @@ body {
     margin: 0px;
 }
 
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .h1 {
     font-family: var(--font);
     font-size: var(--h1-size);
@@ -64,8 +70,6 @@ body {
     width: 100%;
     background-image: linear-gradient(var(--purple), var(--pink));
     box-shadow: var(--sm-shadow);
-    display: flex;
-    align-items: center;
     box-sizing: border-box;
 }
 

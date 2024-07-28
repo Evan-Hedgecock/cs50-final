@@ -17,11 +17,14 @@
     <title>Wisp: {% block title %}{% endblock %}</title>
 </head>
 
-<body>     
-    <div class="header login-header">
-        <nav> 
-            <div class="login-nav">
-                <div class="login-signup-button">    
+<body>
+    {% if session["user_id"] %} 
+    <div class="header flex-center">    
+    {% else %}
+    <div class="header login-header flex-center">
+         
+    {% endif %}
+           
                     {% block header %}{% endblock %}
                 </div>
             </div>
