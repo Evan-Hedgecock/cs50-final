@@ -68,7 +68,7 @@ def after_request(response):
 def index():
     """Show each section overview, homepage"""
     if request.method == "GET":
-        name = db.session.execute(select(User.name).where(session["user_id"] == User.id)).scalar()
+        name = get_name(session["user_id"])
     return render_template("index.html", name=name)
 
 @app.route("/loans", methods=["GET", "POST"])
@@ -125,6 +125,13 @@ def login():
     else:
         return render_template("login.html")
 
+@app.route("/account", methods=["GET", "POST"])
+@login_required
+def account():
+    name = get_name(session["user_id"])
+    username = get_username(session["user_id"])
+    if request.method == "GET":
+        return render_template("account.html", name=name, username=username)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -141,6 +148,9 @@ def signup():
         name = request.form.get("name")
         password = request.form.get("password")
         confirm = request.form.get("confirm")
+
+        name = name.capitalize()
+        print(name)
 
         if check_spaces(username):
             flash("Spaces not allowed in username", "danger")
@@ -187,3 +197,12 @@ def check_spaces(string):
         return True
     else:
         return False
+    
+
+def get_name(user_id):
+    name = db.session.execute(select(User.name).where(user_id == User.id)).scalar()
+    return name
+
+def get_username(user_id):
+    username = db.session.execute(select(User.username).where(user_id == User.id)).scalar()
+    return username

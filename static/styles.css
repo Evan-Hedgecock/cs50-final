@@ -390,3 +390,17 @@ a {
     padding-top: 10px;
     margin-bottom: 0px;
 }
+
+.card-text-box {
+    width: 90%;
+    height: auto;
+}
+
+.text-box.disabled {
+    color: #00000080;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}

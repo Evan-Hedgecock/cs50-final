@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block script %}
+{% endblock %}
+
+{% block header %}
+<ul class="nav-list flex-center">
+    <li class="nav-item flex-center">
+        <a href="/" class="nav-link">Home</a>
+    </li>
+    <li class="nav-item flex-center">
+        <a href="/loans" class="nav-link">Loans</a>
+    </li>
+    <li class="nav-item flex-center">
+        <a href="/budget" class="nav-link">Budget</a>
+    </li>
+    <li class="nav-item flex-center">
+        <a href="/progress" class="nav-link">Progress</a>
+    </li>
+    <li class="nav-item flex-center active-nav">
+        <a href="/account" class="nav-link">Account</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block main %}
+
+<div class="flex-center pt-50">
+    <h1 class="h1 mw-50 center-text">Hi {{ name }}! You can change any of your account info here.</h1>
+</div>
+<div class="flex-center card-container">
+    <div class="card-primary flex-center">
+        <h1 class="h1 bold card-title">Username</h1>
+        <form class="form" action="/account" method="post" autocomplete="off">
+            <input type="text" name="username_" id="username_" class="hidden"><input type="password" name="password_" id="password_" class="hidden">
+            <input type="text" name="username_" id="username_" class="text-box card-text-box disabled" placeholder="{{ username }}" autofocus value="{{ username }}" disabled>
+            <input type="text" name="new-username_" id="new-username_" class="text-box card-text-box" placeholder="New username" autocomplete="off">
+            <input type="password" name="password_" id="password_" class="text-box card-text-box" placeholder="Password" autocomplete="off">
+            <input type="submit" value="Confirm" class="button">
+        </form>
+    </div>
+    <div class="card-primary flex-center">
+        <h1 class="h1 bold card-title">Password</h1>
+        <form class="form" action="/account" method="post" autocomplete="off">
+            <input type="text" name="username_" id="username_" class="hidden"><input type="password" name="password_" id="password_" class="hidden">
+            <input type="text" name="password" id="password" class="text-box card-text-box" placeholder="Current password" autofocus>
+            <input type="text" name="new-password" id="new-password" class="text-box card-text-box" placeholder="New password" autocomplete="off">
+            <input type="password" name="confirm-password" id="confirm-password" class="text-box card-text-box" placeholder="Confirm password">
+            <input type="submit" value="Confirm" class="button">
+        </form>
+    </div>
+{% endblock %}
