@@ -116,7 +116,7 @@ def login():
 
         if username_real and copies == 1 and check_password_hash(hash, entered_password):
             session["user_id"] = db.session.scalar(select(User.id).where(User.username == username and User.password == hash))
-            print(f"user id = {session["user_id"]}")
+            flash("Login success", "success")
             return redirect("/")
         else:
             flash("Password incorrect", "danger")
@@ -150,7 +150,7 @@ def signup():
         confirm = request.form.get("confirm")
 
         name = name.capitalize()
-        print(name)
+        username = username.lower()
 
         if check_spaces(username):
             flash("Spaces not allowed in username", "danger")
@@ -164,21 +164,22 @@ def signup():
             flash("Passwords don't match", "danger")
             return redirect("/signup")
         
-        if len(password) < 10:
-            flash("Password length must be 10+", "danger")
-            return redirect("/signup")
+        # if len(password) < 10:
+        #     flash("Password length must be 10+", "danger")
+        #     return redirect("/signup")
         
         try:
             user = User(name=name, username=username, password=generate_password_hash(password))
             db.session.add(user)
             db.session.commit()
-            flash("Registration success!")
+            flash("Registration success!", "success")
+            session["user_id"] = db.session.scalar(select(User.id).where(User.username == username))
             return redirect("/")
         
         except IntegrityError:
-            flash("Username already exists, try logging in instead")
+            flash("Username already exists, try logging in instead", "danger")
             return redirect("/login")
-    
+
     return render_template("signup.html")
 
 @app.route("/signout")

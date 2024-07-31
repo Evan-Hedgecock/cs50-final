@@ -245,6 +245,10 @@ a {
     background-color: #ff000080;
 }
 
+.alert-success {
+    background-color: #00800080;
+}
+
 .nav-list li:not(.active-nav):not(.ignore):hover {
     padding: 10px 0px;
     background-image: linear-gradient(to bottom, var(--purple), var(--pink));
