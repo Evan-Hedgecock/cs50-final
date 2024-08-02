@@ -33,7 +33,7 @@
     {% block header %}{% endblock %}  
 
     </div>
-
+    <div class="main">
     {% block welcome %}{% endblock %}
 
     {% with messages = g.flashed_messages %}
@@ -47,8 +47,12 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    {% block main %}{% endblock %}
+    
+        {% block main %}{% endblock %}
+    </div>
+    <footer>
+        <p>Wisp by Evan Hedgecock</p>
+    </footer>
     
 </body>
 
