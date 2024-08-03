@@ -55,7 +55,6 @@ class Loans(db.Model):
 
 
 with app.app_context():
-    print("Creating tables...")
     db.create_all()
     
 @app.before_request

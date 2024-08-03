@@ -238,6 +238,7 @@ a {
     padding: 15px 45px;
     border: hidden;
     transition: width .5s;
+    max-width: 25vw;
     width: 50%;
     max-height: 100%;
 }
@@ -523,8 +524,25 @@ footer {
 }
 
 .back-button {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    width: 100%;
+    align-self: flex-end;
+    cursor: pointer;
+    border: none;
+    background-color: #00000000;
+    border-radius: 50%;
+    stroke: black;
+    
+}
+
+.back-button-svg {
+    height: 5vh;
+    padding: 5px;
+}
+
+.back-button:hover {
+    stroke: var(--white50);
+    /* background-image: linear-gradient(to bottom, var(--pink), var(--purple)); */
+}
+
+.form h2 {
+    margin: 0px;
 }

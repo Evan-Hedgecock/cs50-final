@@ -58,13 +58,19 @@
             </li>
         </ul>
 
-        <div id="hidden-form-back-button" class="back-button collapse">
+        <!-- <div id="hidden-form-back-button" class="back-button collapse">
             <button class="button">
                 Go back
             </button>
-        </div>
+        </div> -->
 
         <div id="make-payment-form" class="collapse form">
+
+            <button onclick="goBack(openPaymentForm())" class="back-button">
+                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+            </button>
+    
+
             <h2 class="h1-white">Make Payment</h2>
             <form class="form" action="/make-payment" method="post" autocomplete="off">
                 <label class="form-label">Make payment to:</label>
@@ -79,6 +85,11 @@
         </div>
         
         <div id="add-loan-form" class="collapse form">
+
+            <button onclick="goBack(openAddForm())" class="back-button">
+                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+            </button>
+
             <h2 class="h1-white">Add Loan</h2>
             <form class="form" action="/add-loan" method="post" autocomplete="off">
                 <label class="form-label">Loan name</label>
@@ -92,6 +103,11 @@
         </div>
 
         <div id="edit-loan-form" class="collapse form">
+
+            <button onclick="goBack(openEditForm())" class="back-button">
+                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+            </button>
+
             <h2 class="h1-white">Edit Loan</h2>
             <form class="form" action="/edit-loan" method="post" autocomplete="off">
                 <label class="form-label">Loan name</label>
