@@ -25,15 +25,15 @@
 
 {% block main %}
 
-<div class="flex-center pt-50">
+<div class="flex-center">
     <h1 class="h1 mw-50 center-text">Hi {{ name }}! You can change any of your account info here.</h1>
 </div>
-<div class="flex-center card-container">
+<div class="flex-center section-container">
     <div class="card-primary flex-center">
         <h1 class="h1 bold card-title">Username</h1>
         <form class="form" action="/account" method="post" autocomplete="off">
             <input type="text" name="username_" id="username_" class="hidden"><input type="password" name="password_" id="password_" class="hidden">
-            <input type="text" name="username_" id="username_" class="text-box card-text-box disabled" placeholder="{{ username }}" autofocus value="{{ username }}" disabled>
+            <input type="text" name="username_" id="username_" class="text-box card-text-box disabled" placeholder="{{ username }}" value="{{ username }}" disabled>
             <input type="text" name="new-username_" id="new-username_" class="text-box card-text-box" placeholder="New username" autocomplete="off">
             <input type="password" name="password_" id="password_" class="text-box card-text-box" placeholder="Password" autocomplete="off">
             <input type="submit" value="Confirm" class="button">
@@ -43,7 +43,7 @@
         <h1 class="h1 bold card-title">Password</h1>
         <form class="form" action="/account" method="post" autocomplete="off">
             <input type="text" name="username_" id="username_" class="hidden"><input type="password" name="password_" id="password_" class="hidden">
-            <input type="text" name="password" id="password" class="text-box card-text-box" placeholder="Current password" autofocus>
+            <input type="text" name="password" id="password" class="text-box card-text-box" placeholder="Current password">
             <input type="text" name="new-password" id="new-password" class="text-box card-text-box" placeholder="New password" autocomplete="off">
             <input type="password" name="confirm-password" id="confirm-password" class="text-box card-text-box" placeholder="Confirm password">
             <input type="submit" value="Confirm" class="button">

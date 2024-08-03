@@ -1,5 +1,6 @@
 
 :root {
+    --light-pink: #B3A7FF;
     --pink: #9381FF;
     --purple: #584d99;
     --purple50: #584d9980;
@@ -22,6 +23,8 @@
 
     --h3-size: 36px;
 
+    --h4-size: 32px;
+
     --button-size: 36px;
 
     --button-curve: 23px;
@@ -35,6 +38,14 @@
 
 body {
     margin: 0px;
+    font-family: var(--font);
+    height: 100vh;
+}
+
+.main {
+    height: 80vh;
+    margin-top: 75px;
+    /* visibility: visible; */
 }
 
 a {
@@ -53,23 +64,32 @@ a {
 }
 
 .h1 {
-    font-family: var(--font);
     font-size: var(--h1-size);
     font-weight: var(--h1-weight);
 }
 
+.h1-white {
+    font-size: var(--h1-size);
+    font-weight: var(--h1-weight);
+    color: var(--white);
+}
+
 .h2 {
-    font-family: var(--font);
     font-size: var(--h2-size);
     font-weight: var(--h2-weight);
     color: black;
 }
 
 .h3 {
-    font-family: var(--font);
     font-size: var(--h3-size);
     font-weight: var(--h2-weight);
     color: var(--white);
+}
+
+.h3-black {
+    font-size: var(--h3-size);
+    font-weight: var(--h2-weight);
+    color: black;
 }
 
 .color-white {
@@ -187,7 +207,7 @@ a {
     font-weight: var(--h1-weight);
     font-size: var(--h2-size);
     height: auto;
-    width: 48%;
+    width: 50%;
     margin-bottom: 20px;
     border-radius: var(--input-curve);
     padding: 10px 20px;
@@ -336,13 +356,14 @@ a {
     list-style-type: none;
     padding: 0px;
     flex-direction: column;
+    width: 100%;
 }
 
 .card-primary {
     flex-direction: column;
     justify-content: start;
-    width: 430px;
-    height: 480px;
+    width: 30%;
+    height: 80%;
     margin: 10px;
     border-radius: var(--input-curve);
     box-shadow: var(--md-shadow);
@@ -350,10 +371,10 @@ a {
 
 .menu-button {
     background-color: var(--pink);
-    padding: 10px 20px;
+    padding: 20px 30px;
     box-sizing: border-box;
     text-align: center;
-    width: 385px;
+    width: 80%;
     max-height: 100%;
     margin: 10px 0px;
     border-radius: var(--button-curve);
@@ -374,13 +395,9 @@ a {
 }
 .menu-button:hover {
     background-image: linear-gradient(to top, var(--pink), var(--purple));
-    /* box-shadow: var(--md-shadow);
-    text-shadow: var(--sm-shadow); */
-    animation-name: button-hover;
-    animation-iteration-count: infinite;
-    animation-duration: .75s;
-    animation-direction: alternate;
-    animation-timing-function: ease-in-out;
+    box-shadow: var(--md-shadow);
+    text-shadow: var(--sm-shadow);
+    cursor: pointer;
 }
 
 .menu-item {
@@ -388,6 +405,7 @@ a {
     align-items: center;
     justify-content: center;
     margin: 0px 20px;
+    width: 100%;
 }
 
 .card-title {
@@ -407,4 +425,96 @@ a {
 .hidden {
     display: none;
     visibility: hidden;
+}
+
+
+.section-container {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-evenly;
+    height: 100%;
+}
+
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    text-align: center;
+    background-image: linear-gradient(to bottom, var(--purple), var(--pink));
+    border-radius: var(--button-curve);
+    height: 100%;
+    width: 25%;
+}
+
+.sidebar-overview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-image: linear-gradient(to right, var(--pink), var(--light-pink));
+    border-radius: var(--button-curve);
+    margin-top: 40px;
+    text-align: center;
+    width: 80%;
+    height: 30%;
+    padding: 0px 30px;
+}
+
+
+
+.loan-table {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, var(--purple), var(--pink));
+    border-radius: var(--button-curve);
+
+}
+
+.table {
+    text-align: center;
+    justify-content: start;
+    padding: 20px;
+}
+
+td, th {
+    padding: 10px 50px;
+}
+
+th {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+
+footer {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+}
+
+
+.hidden-form .form .text-box {
+    width: 80%;
+}
+
+.form-label {
+    width: 80%;
+    font-size: var(--h3-size);
+    text-align: start;
+    color: var(--white50);
+    visibility: collapse;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.collapse {
+    visibility: collapse;
 }

@@ -1,7 +1,19 @@
 {% extends "layout.html" %}
 
-{% block script %}
-{% endblock %}
+<script>
+
+    function openAddForm() {
+        document.getElementById('add-loan-form').classList.toggle('visible')
+        document.getElementById('add-loan-form').classList.toggle('collapse')
+
+        document.getElementById('s-m').classList.toggle('visible')
+        document.getElementById('s-m').classList.toggle('collapse')
+        
+        document.getElementById('s-o').classList.toggle('visible')
+        document.getElementById('s-o').classList.toggle('collapse')
+    }
+
+</script>
 
 {% block header %}
 <ul class="nav-list flex-center">
@@ -38,26 +50,50 @@
 
     <div class="sidebar">
 
-        <div class="sidebar-overview">
+        <div id="s-o" class="sidebar-overview visible">
             <h2 class="h3-black">Total balance: $25,000</h2>
             <h2 class="h3-black">Monthly interest: $560</h2>
         </div>
+        
+        <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
+            <li class="menu-item">
+                <a onclick="openMenu()" id="make-payment" class="menu-button">Make payment</a>
+            </li>
+            <li class="menu-item">
+                <a onclick="openMenu()" id="add-loan" class="menu-button">Add loan</a>
+            </li>
+            <li class="menu-item">
+                <a onclick="openMenu()" id="edit-loan" class="menu-button">Edit loan</a>
+            </li>
+        </ul>
 
-        <div class="sidebar-buttons">
-            <ul class="menu flex-center h3">
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Make payment</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Add loan</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Edit loan</a>
-                </li>
-            </ul>
+        <div id="add-loan-form" class="collapse">
+            <h2 class="h1-white">Add Loan</h2>
+            <form class="form" action="/add-loan" method="post" autocomplete="off">
+                <label class="form-label">Loan name</label>
+                <input type="text" class="text-box" placeholder="Loan name" autofocus>
+                <label class="form-label">Loan amount</label>
+                <input type="text" class="text-box" placeholder="Loan amount">
+                <label class="form-label">Interest rate</label>
+                <input type="text" class="text-box" placeholder="Interest rate">
+                <input type="submit" value="Add" class="button">
+            </form>
         </div>
-
     </div>
+
+    <!-- <div class="hidden-form">
+        <h2 class="h1-white">Add Loan</h2>
+        <form class="form" action="/add-loan" method="post" autocomplete="off">
+            <label class="form-label">Loan name</label>
+            <input type="text" class="text-box" placeholder="Loan name" autofocus>
+            <label class="form-label">Loan amount</label>
+            <input type="text" class="text-box" placeholder="Loan amount">
+            <label class="form-label">Interest rate</label>
+            <input type="text" class="text-box" placeholder="Interest rate">
+            <input type="submit" value="Add" class="button">
+        </form>
+    </div> -->
+    
 
     <div class="loan-table">
         <table class="table h3">

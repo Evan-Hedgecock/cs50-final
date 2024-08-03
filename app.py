@@ -46,6 +46,14 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
 
+class Loans(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    amount: Mapped[int]
+    interest: Mapped[int]
+    principal: Mapped[int]
+
+
 with app.app_context():
     print("Creating tables...")
     db.create_all()
@@ -75,6 +83,14 @@ def index():
 @login_required
 def loans():
     return render_template("loans.html")
+
+@app.route("/manage-loans", methods=["GET", "POST"])
+@login_required
+def loans_manage():
+    if request.method == "GET":
+        
+        return render_template("manage-loans.html")
+
 
 @app.route("/budget", methods=["GET", "POST"])
 @login_required
