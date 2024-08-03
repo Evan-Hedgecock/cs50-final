@@ -20,17 +20,41 @@
             document.getElementById("profile-dropdown").classList.toggle("show");
             document.getElementById("profile-button").classList.toggle("ignore");
             }
-            
-        function openAddForm() {
-            document.getElementById('add-loan-form').classList.toggle('visible');
-            document.getElementById('add-loan-form').classList.toggle('collapse');
-
+        
+        function toggleSidebar() {
             document.getElementById('s-m').classList.toggle('visible');
             document.getElementById('s-m').classList.toggle('collapse');
             
             document.getElementById('s-o').classList.toggle('visible');
             document.getElementById('s-o').classList.toggle('collapse');
+
+            document.getElementById('hidden-form-back-button').classList.toggle('visible');
+            document.getElementById('hidden-form-back-button').classList.toggle('collapse');
             }
+    
+        function openAddForm() {
+            document.getElementById('add-loan-form').classList.toggle('visible');
+            document.getElementById('add-loan-form').classList.toggle('collapse');
+            toggleSidebar()
+
+            }
+
+        function openEditForm() {
+            document.getElementById('edit-loan-form').classList.toggle('visible');
+            document.getElementById('edit-loan-form').classList.toggle('collapse');
+            toggleSidebar()
+        }
+
+        function openPaymentForm() {
+            document.getElementById('make-payment-form').classList.toggle('visible');
+            document.getElementById('make-payment-form').classList.toggle('collapse');
+            toggleSidebar()
+        }
+
+        function goBack(openForm) {
+            openForm
+        }
+
     </script>
 </head>
 

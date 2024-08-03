@@ -48,16 +48,36 @@
         
         <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
             <li class="menu-item">
-                <a onclick="openAddForm()" id="make-payment" class="menu-button">Make payment</a>
+                <a onclick="openPaymentForm()" id="make-payment" class="menu-button">Make payment</a>
             </li>
             <li class="menu-item">
                 <a onclick="openAddForm()" id="add-loan" class="menu-button">Add loan</a>
             </li>
             <li class="menu-item">
-                <a onclick="openAddForm()" id="edit-loan" class="menu-button">Edit loan</a>
+                <a onclick="openEditForm()" id="edit-loan" class="menu-button">Edit loan</a>
             </li>
         </ul>
 
+        <div id="hidden-form-back-button" class="back-button collapse">
+            <button class="button">
+                Go back
+            </button>
+        </div>
+
+        <div id="make-payment-form" class="collapse form">
+            <h2 class="h1-white">Make Payment</h2>
+            <form class="form" action="/make-payment" method="post" autocomplete="off">
+                <label class="form-label">Make payment to:</label>
+                <select type="select" class="text-box">
+                    <option value="Select loan" disabled selected>Select loan</option>
+                <label class="form-label">Payment amount</label>
+                <input type="text" class="text-box" placeholder="Payment amount">
+                <!-- <label class="form-label">Interest rate</label>
+                <input type="text" class="text-box" placeholder="Interest rate"> -->
+                <input type="submit" value="Confirm" class="button">
+            </form>
+        </div>
+        
         <div id="add-loan-form" class="collapse form">
             <h2 class="h1-white">Add Loan</h2>
             <form class="form" action="/add-loan" method="post" autocomplete="off">
@@ -70,6 +90,22 @@
                 <input type="submit" value="Add" class="button">
             </form>
         </div>
+
+        <div id="edit-loan-form" class="collapse form">
+            <h2 class="h1-white">Edit Loan</h2>
+            <form class="form" action="/edit-loan" method="post" autocomplete="off">
+                <label class="form-label">Loan name</label>
+                <input type="text" class="text-box" placeholder="Loan name" autofocus>
+                <label class="form-label">Loan amount</label>
+                <input type="text" class="text-box" placeholder="Loan amount">
+                <label class="form-label">Interest rate</label>
+                <input type="text" class="text-box" placeholder="Interest rate">
+                <input type="submit" value="Add" class="button">
+            </form>
+        </div>
+
+
+
     </div>
 
     <!-- <div class="hidden-form">

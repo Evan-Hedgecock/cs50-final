@@ -239,6 +239,7 @@ a {
     border: hidden;
     transition: width .5s;
     width: 50%;
+    max-height: 100%;
 }
 
 .button:hover {
@@ -519,4 +520,11 @@ footer {
 
 .collapse {
     visibility: collapse;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
 }
