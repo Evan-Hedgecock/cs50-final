@@ -2,16 +2,7 @@
 
 <script>
 
-    function openAddForm() {
-        document.getElementById('add-loan-form').classList.toggle('visible')
-        document.getElementById('add-loan-form').classList.toggle('collapse')
-
-        document.getElementById('s-m').classList.toggle('visible')
-        document.getElementById('s-m').classList.toggle('collapse')
-        
-        document.getElementById('s-o').classList.toggle('visible')
-        document.getElementById('s-o').classList.toggle('collapse')
-    }
+    
 
 </script>
 
@@ -57,13 +48,13 @@
         
         <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
             <li class="menu-item">
-                <a onclick="openMenu()" id="make-payment" class="menu-button">Make payment</a>
+                <a onclick="openAddForm()" id="make-payment" class="menu-button">Make payment</a>
             </li>
             <li class="menu-item">
-                <a onclick="openMenu()" id="add-loan" class="menu-button">Add loan</a>
+                <a onclick="openAddForm()" id="add-loan" class="menu-button">Add loan</a>
             </li>
             <li class="menu-item">
-                <a onclick="openMenu()" id="edit-loan" class="menu-button">Edit loan</a>
+                <a onclick="openAddForm()" id="edit-loan" class="menu-button">Edit loan</a>
             </li>
         </ul>
 

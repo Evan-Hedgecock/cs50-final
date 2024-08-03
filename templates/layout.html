@@ -17,8 +17,19 @@
     <title>Wisp: {% block title %}{% endblock %}</title>
     <script>
         function dropDown() {
-                document.getElementById("profile-dropdown").classList.toggle("show");
-                document.getElementById("profile-button").classList.toggle("ignore")
+            document.getElementById("profile-dropdown").classList.toggle("show");
+            document.getElementById("profile-button").classList.toggle("ignore");
+            }
+            
+        function openAddForm() {
+            document.getElementById('add-loan-form').classList.toggle('visible');
+            document.getElementById('add-loan-form').classList.toggle('collapse');
+
+            document.getElementById('s-m').classList.toggle('visible');
+            document.getElementById('s-m').classList.toggle('collapse');
+            
+            document.getElementById('s-o').classList.toggle('visible');
+            document.getElementById('s-o').classList.toggle('collapse');
             }
     </script>
 </head>
