@@ -107,7 +107,7 @@ def index():
 def loans():
     return render_template("loans.html")
 
-@app.route("/manage-loans", methods=["GET", "POST"])
+@app.route("/manage-loans", methods=["GET"])
 @login_required
 def manage_loans():
     if request.method == "GET":
@@ -170,13 +170,13 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route("/account", methods=["GET", "POST"])
+@app.route("/account", methods=["GET"])
 @login_required
 def account():
     name = get_name(session["user_id"])
     username = get_username(session["user_id"])
-    if request.method == "GET":
-        return render_template("account.html", name=name, username=username)
+    return render_template("account.html", name=name, username=username)
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -236,34 +236,9 @@ def signout():
 def add_loan():
 
     if request.method == "POST":
-        # if not request.form.get("add-loan-name") or not request.form.get("add-loan-amount") or not request.form.get("add-loan-interest"):
-        #     flash("All fields required", "danger")
-        #     print(get_flashed_messages())
-        #     return redirect("/add-loan")
-
-        # name = request.form.get("add-loan-name")
-        # amount = request.form.get("add-loan-amount")
-        # interest = request.form.get("add-loan-interest")
-
-        # try:
-        #     amount = int(amount)
-        #     interest = int(interest)
-        #     monthly_interest = ((amount * (interest / 100)) / 12)
-        
-        # except ValueError:
-        #     if type(amount) != int:
-        #         flash("Enter dollar amount of loan", "danger")
-        #         return redirect("/add-loan")
-            
-        #     if type(interest) != int:
-        #         flash("Enter interest percentage of loan", "danger")
-        #         return redirect("/add-loan")
-        
-        # loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=session["user_id"])
-
         loan = get_loan("add", session["user_id"])
-        print(loan)
-        
+        session["form_name"] = "add-loan-form"
+        print("Session form_name:", session["form_name"])
         if isinstance(loan, Loans):
             db.session.add(loan)
             db.session.commit()

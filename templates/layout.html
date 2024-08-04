@@ -15,6 +15,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
     <title>Wisp: {% block title %}{% endblock %}</title>
+    
+</head>
+
+<body>
+    {% if session["user_id"] %} 
+    <div class="header flex-center">    
+    {% else %}
+    <div class="header login-header flex-center"> 
+    {% endif %}  
+
+    {% block header %}{% endblock %}  
+
+    </div>
+    <div class="main">
+    {% block welcome %}{% endblock %}
+
+    <!-- {% with messages = g.flashed_messages %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="alert alert-{{ category }} h3" role="alert">
+                    {{ message }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %} -->
+
+    
+    <div id="flashed-messages-container"></div>
+    
+    
+        {% block main %}
+            {% block sidebar %}
+            {% endblock %}
+        {% endblock %}
+    </div>
+    <footer>
+        <p>Wisp by Evan Hedgecock</p>
+    </footer>
+    
+
     <script>
         function dropDown() {
             document.getElementById("profile-dropdown").classList.toggle("show");
@@ -27,21 +69,21 @@
             }
     
         function openAddForm() {
-            document.getElementById('add-loan-form').classList.toggle('visible');
-            document.getElementById('add-loan-form').classList.toggle('collapse');
+            document.getElementById('add-loan-form-container').classList.toggle('visible');
+            document.getElementById('add-loan-form-container').classList.toggle('collapse');
             toggleSidebar()
 
             }
 
         function openEditForm() {
-            document.getElementById('edit-loan-form').classList.toggle('visible');
-            document.getElementById('edit-loan-form').classList.toggle('collapse');
+            document.getElementById('edit-loan-form-container').classList.toggle('visible');
+            document.getElementById('edit-loan-form-container').classList.toggle('collapse');
             toggleSidebar()
         }
 
         function openPaymentForm() {
-            document.getElementById('make-payment-form').classList.toggle('visible');
-            document.getElementById('make-payment-form').classList.toggle('collapse');
+            document.getElementById('make-payment-form-container').classList.toggle('visible');
+            document.getElementById('make-payment-form-container').classList.toggle('collapse');
             toggleSidebar()
         }
 
@@ -91,60 +133,40 @@
             const formattedSpan = input.nextElementSibling;
             formattedSpan.innerText = formattedValue;
         }
-
-        function displayFlashedMessages(messages) {
-            const container = document.getElementById('flashed-messages-container');
+        
+        function displayFlashedMessages(messages, formName) {
+            console.log("When flashed, formName =", formName);
+            
+            const container = document.getElementById("flashed-messages-container");
             messages.forEach(msg => {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'flashed-message';
+                const messageElement = document.createElement("div");
+                messageElement.className = "flashed-message";
                 messageElement.innerText = msg;
                 container.appendChild(messageElement);
 
                 // Position the message relative to the form
-                const form = document.getElementById('add-loan-form');
+                const form = document.getElementById(formName);
                 const formRect = form.getBoundingClientRect();
                 messageElement.style.top = formRect.top + window.scrollY + 'px';
-                messageElement.style.left = formRect.left + window.scrollX + 'px';
+                messageElement.style.left = formRect.left + window.scrollX + 'px'; 
             });
         }
 
+        // Check for flashed messages and form name
+        document.addEventListener("DOMContentLoaded", () => {
+            const flashedMessages = {{ get_flashed_messages() | tojson }};
+            const formName = "{{ session.pop('form_name', '') }}"
+            console.log("Checking for flashes from:", formName);
+            
+            if (flashedMessages.length > 0 && formName) {
+                console.log("Displaying flashed message:", flashedMessages, "\nFor formName:", formName);
+                
+                displayFlashedMessages(flashedMessages, formName);
+            }
+        });
+
+
     </script>
-</head>
-
-<body>
-    {% if session["user_id"] %} 
-    <div class="header flex-center">    
-    {% else %}
-    <div class="header login-header flex-center"> 
-    {% endif %}  
-
-    {% block header %}{% endblock %}  
-
-    </div>
-    <div class="main">
-    {% block welcome %}{% endblock %}
-
-    {% with messages = g.flashed_messages %}
-        {% if messages %}
-            <ul class="flashes">
-            {% for category, message in messages %}
-                <li class="alert alert-{{ category }} h3" role="alert">
-                    {{ message }}
-                </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    
-        {% block main %}
-            {% block sidebar %}
-            {% endblock %}
-        {% endblock %}
-    </div>
-    <footer>
-        <p>Wisp by Evan Hedgecock</p>
-    </footer>
-    
 </body>
 
 </html>
