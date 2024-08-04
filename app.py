@@ -110,6 +110,7 @@ def loans():
 @app.route("/manage-loans", methods=["GET"])
 @login_required
 def manage_loans():
+    set_form_name("s-m")
     if request.method == "GET":
         loans = db.session.scalars(select(Loans).where(Loans.user_id == session["user_id"])).all()
         total = 0
@@ -135,9 +136,9 @@ def progress():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     session.clear()
+    set_form_name("login-form")
     print(f"Request method: {request.method}")
     if request.method == "POST":
-        
         if not request.form.get("username"):
             flash("Enter username", "danger")
             return redirect("/login")
@@ -177,14 +178,26 @@ def account():
     username = get_username(session["user_id"])
     return render_template("account.html", name=name, username=username)
 
+@app.route("/update-password", methods=["POST"])
+@login_required
+def update_password():
+    flash("Password updated", "success")
+    set_form_name("update-password-form")
+    return redirect("/account")
+
+@app.route("/update-username", methods=["POST"])
+@login_required
+def update_username():
+    flash("Username updated", "success")
+    set_form_name("update-username-form")
+    return redirect("/account")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-
     session.clear()
+    set_form_name("signup-form")
 
     if request.method == "POST":
-
         if not request.form.get("username") or not request.form.get("name") or not request.form.get("password") or not request.form.get("confirm"):
             flash("Please enter all fields", "danger")
             return redirect("/signup")
@@ -237,12 +250,12 @@ def add_loan():
 
     if request.method == "POST":
         loan = get_loan("add", session["user_id"])
-        session["form_name"] = "add-loan-form"
+        set_form_name("add-loan-form")
         print("Session form_name:", session["form_name"])
         if isinstance(loan, Loans):
             db.session.add(loan)
             db.session.commit()
-            flash("Loan added successfully!")
+            flash("Loan added successfully!", "success")
             return redirect("/manage-loans")
         else:
             url = loan
@@ -251,12 +264,6 @@ def add_loan():
     else:
         loans = get_loans(session["user_id"])
         return render_template("manage-loans-add-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
-
-# @app.route("manage-loans-add-form.html")
-
-
-
-
 
 
 if __name__ == "__main__":
@@ -303,7 +310,6 @@ def get_loan(form, user_id):
     while responding:            
         if not request.form.get(form + "-name") or not request.form.get(form + "-amount") or not request.form.get(form + "-interest"):
             flash("All fields required", "danger")
-            print("flashed messages: ", get_flashed_messages())
             responding = False
             break
             
@@ -332,8 +338,9 @@ def get_loan(form, user_id):
         
         loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=user_id)
         response = loan
-        print(response)
         responding = False
         break
-    print("responded")
     return response
+
+def set_form_name(form_name):
+    session["form_name"] = form_name
