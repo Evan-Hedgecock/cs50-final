@@ -138,23 +138,32 @@
             console.log("When flashed, formName =", formName);
             
             const container = document.getElementById("flashed-messages-container");
-            messages.forEach(msg => {
+            messages.forEach(([category, message]) => {
+                console.log("Message: " + message + "\n" + "Category: " + category);
+                
                 const messageElement = document.createElement("div");
-                messageElement.className = "flashed-message";
-                messageElement.innerText = msg;
+                messageElement.className = `flashes ${category}`;
+                messageElement.innerText = message;
                 container.appendChild(messageElement);
 
                 // Position the message relative to the form
                 const form = document.getElementById(formName);
+                form.parentNode.insertBefore(container, form); // Insert the container before the form
+                console.log("Form name: " + formName)
                 const formRect = form.getBoundingClientRect();
-                messageElement.style.top = formRect.top + window.scrollY + 'px';
-                messageElement.style.left = formRect.left + window.scrollX + 'px'; 
+                console.log(formRect);
+                console.log("formRect width: " + (formRect.width / 2) )
+                
+                messageElement.style.bottom = formRect.top + 'px';
+                messageElement.style.left = formRect.left + 'px'; 
+                messageElement.style.width = formRect.width + 'px';
+                console.log("messageElement width: " + messageElement.getBoundingClientRect().width)
             });
         }
 
         // Check for flashed messages and form name
         document.addEventListener("DOMContentLoaded", () => {
-            const flashedMessages = {{ get_flashed_messages() | tojson }};
+            const flashedMessages = {{ get_flashed_messages(with_categories=True) | tojson }};
             const formName = "{{ session.pop('form_name', '') }}"
             console.log("Checking for flashes from:", formName);
             
