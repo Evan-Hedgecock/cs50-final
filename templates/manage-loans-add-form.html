@@ -10,15 +10,15 @@
     <h2 class="h1-white">Add Loan</h2>
     <form class="form" action="/add-loan" method="post" autocomplete="off">
         <label class="form-label">Loan name</label>
-        <input type="text" class="text-box" name="add-loan-name" id="add-loan-name" placeholder="Loan name" autofocus>
+        <input type="text" class="text-box" name="add-name" id="add-name" placeholder="Loan name" autofocus>
         <span></span>
         
         <label class="form-label">Loan balance</label>
-        <input type="text" class="text-box usd" name="add-loan-amount" id="add-loan-amount" placeholder="Loan balance" onkeypress="return onlyNumberKey(event)">
+        <input type="text" class="text-box usd" name="add-amount" id="add-amount" placeholder="Loan balance" onkeypress="return onlyNumberKey(event)">
         <span></span>
         
         <label class="form-label">Interest rate</label>
-        <input type="text" class="text-box percent" name="add-loan-interest" id="add-loan-interest" placeholder="Interest rate" onkeypress="return onlyNumberKey(event)">
+        <input type="text" class="text-box percent" name="add-interest" id="add-interest" placeholder="Interest rate" onkeypress="return onlyNumberKey(event)">
         <span></span>
         
         <input type="submit" value="Add" class="button">

@@ -254,6 +254,11 @@ a {
     justify-content: center;
     text-align: center;
     padding: 0px;
+    flex-flow: column, wrap;
+    /* position: absolute;
+    right: 50vw;
+    top: 5vh;
+    z-index: 99; */
 }
 
 .alert {

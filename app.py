@@ -236,37 +236,42 @@ def signout():
 def add_loan():
 
     if request.method == "POST":
-        print("posting")
-        if not request.form.get("add-loan-name") or not request.form.get("add-loan-amount") or not request.form.get("add-loan-interest"):
-            flash("All fields required", "danger")
-            print(get_flashed_messages())
-            return redirect("/add-loan")
+        # if not request.form.get("add-loan-name") or not request.form.get("add-loan-amount") or not request.form.get("add-loan-interest"):
+        #     flash("All fields required", "danger")
+        #     print(get_flashed_messages())
+        #     return redirect("/add-loan")
 
-        name = request.form.get("add-loan-name")
-        amount = request.form.get("add-loan-amount")
-        interest = request.form.get("add-loan-interest")
+        # name = request.form.get("add-loan-name")
+        # amount = request.form.get("add-loan-amount")
+        # interest = request.form.get("add-loan-interest")
 
-        try:
-            amount = int(amount)
-            interest = int(interest)
-            monthly_interest = ((amount * (interest / 100)) / 12)
+        # try:
+        #     amount = int(amount)
+        #     interest = int(interest)
+        #     monthly_interest = ((amount * (interest / 100)) / 12)
         
-        except ValueError:
-            if type(amount) != int:
-                flash("Enter dollar amount of loan", "danger")
-                return redirect("/add-loan")
+        # except ValueError:
+        #     if type(amount) != int:
+        #         flash("Enter dollar amount of loan", "danger")
+        #         return redirect("/add-loan")
             
-            if type(interest) != int:
-                flash("Enter interest percentage of loan", "danger")
-                return redirect("/add-loan")
+        #     if type(interest) != int:
+        #         flash("Enter interest percentage of loan", "danger")
+        #         return redirect("/add-loan")
         
-        loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=session["user_id"])
+        # loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=session["user_id"])
 
-        db.session.add(loan)
-        db.session.commit()
-
-        flash("Loan added successfully!")
-        return redirect("/manage-loans")
+        loan = get_loan("add", session["user_id"])
+        print(loan)
+        
+        if isinstance(loan, Loans):
+            db.session.add(loan)
+            db.session.commit()
+            flash("Loan added successfully!")
+            return redirect("/manage-loans")
+        else:
+            url = loan
+            return redirect(url)
     
     else:
         loans = get_loans(session["user_id"])
@@ -316,3 +321,44 @@ def get_interest(loans):
         interest += loan.monthly_interest
     
     return interest
+
+def get_loan(form, user_id):
+    response = "/" + form + "-loan"
+    responding = True
+    while responding:            
+        if not request.form.get(form + "-name") or not request.form.get(form + "-amount") or not request.form.get(form + "-interest"):
+            flash("All fields required", "danger")
+            print("flashed messages: ", get_flashed_messages())
+            responding = False
+            break
+            
+        name = request.form.get(form + "-name")
+        amount = request.form.get(form + "-amount")
+        interest = request.form.get(form + "-interest")
+
+        try:
+            amount = int(amount)
+            interest = int(interest)
+            monthly_interest = ((amount * (interest / 100)) / 12)
+        
+        except ValueError:
+            if type(amount) != int:
+                flash("Enter dollar amount of loan", "danger")  
+                responding = False              
+                break            
+            if type(interest) != int:
+                flash("Enter interest percentage of loan", "danger")
+                responding = False
+                break 
+            else:
+                flash("Unexpected input value", "danger")
+                responding = False
+                break
+        
+        loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=user_id)
+        response = loan
+        print(response)
+        responding = False
+        break
+    print("responded")
+    return response

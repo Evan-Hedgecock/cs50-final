@@ -80,16 +80,16 @@
                 <h2 class="h1-white">Add Loan</h2>
                 <form class="form" action="/add-loan" method="post" autocomplete="off">
                     <label class="form-label">Loan name</label>
-                    <input type="text" class="text-box" name="add-loan-name" placeholder="Loan name" autofocus>
+                    <input type="text" class="text-box" name="add-name" id="add-name" placeholder="Loan name" autofocus>
                     
                     <label class="form-label">Loan balance</label>
-                    <input type="text" class="text-box usd" name="add-loan-amount" placeholder="Loan balance" data-format="usd" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
+                    <input type="text" class="text-box usd" name="add-amount" id="add-amount" placeholder="Loan balance" data-format="usd" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
                     <span class="formatted-value"></span>
                     
                     <label class="form-label">Interest rate</label>
-                    <input type="text" class="text-box percent" name="add-loan-interest" placeholder="Interest rate" data-format="percentage" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
+                    <input type="text" class="text-box percent" name="add-interest" id="add-interest" placeholder="Interest rate" data-format="percentage" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
                     <span class="formatted-value"></span>
-                    
+             
                     <input type="submit" value="Add" class="button">
                 </form>
             </div>
@@ -110,13 +110,18 @@
                                 <option>{{ loan.name }}</option>
                             {% endfor %}
                         {% endif %}
+
+                    <label class="form-label">Change name</label>
+                    <input type="text" class="text-box" id="edit-name" name="edit-name" placeholder="Change name">
                             
                     <label class="form-label">Update balance</label>
-                    <input type="text" class="text-box usd" placeholder="Update balance" data-format="usd" onkeypress="return onlyNumberKey(event)">
+                    <input type="text" class="text-box usd" id="edit-amount" name="edit-amount" placeholder="Update balance" data-format="usd" onkeypress="return onlyNumberKey(event)">
                     <span></span>
+
                     <label class="form-label">Update interest rate</label>
-                    <input type="text" class="text-box percent" placeholder="Update interest rate" data-format="percentage" onkeypress="return onlyNumberKey(event)">
+                    <input type="text" class="text-box percent" placeholder="Update interest rate" id="edit-interest" name="edit-interest" data-format="percentage" onkeypress="return onlyNumberKey(event)">
                     <span></span>
+
                     <input type="submit" value="Confirm" class="button">
                 </form>
             </div>
