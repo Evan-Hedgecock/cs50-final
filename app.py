@@ -7,15 +7,18 @@ from dotenv_vault import load_dotenv
 import sqlalchemy as sa
 from sqlalchemy import Integer, String, insert, select
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.exc import IntegrityError
+from typing import List
 
-from helpers import login_required
+from helpers import login_required, usd, percent, decimal
 
 load_dotenv()
 
 # Configure app
 app = Flask(__name__)
+app.jinja_env.filters["usd"] = usd
+app.jinja_env.filters["percent"] = percent
 app.config['DEBUG'] = True  # Enable debug mode
 
 
@@ -40,19 +43,40 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+# class User(db.Model):
+#     id: Mapped[int] = mapped_column(primary_key=True)
+#     name: Mapped[str]
+#     username: Mapped[str] = mapped_column(unique=True)
+#     password: Mapped[str]
+#     loans: Mapped[List['Loans']] = relationship('Loans', back_populates='user', cascade='all, delete-orphan')
+
+# class Loans(db.Model):
+#     id: Mapped[int] = mapped_column(primary_key=True)
+#     name: Mapped[str]
+#     amount: Mapped[int]
+#     interest: Mapped[int]
+#     principal: Mapped[int]
+#     user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'))
+#     user: Mapped['User'] = relationship('User', back_populates='loans')
+
+
 class User(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
-    username: Mapped[str] = mapped_column(unique=True)
-    password: Mapped[str]
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    loans = relationship('Loans', back_populates='user', cascade='all, delete-orphan')
 
 class Loans(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
-    amount: Mapped[int]
-    interest: Mapped[int]
-    principal: Mapped[int]
-
+    __tablename__ = 'loans'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    interest = db.Column(db.Integer, nullable=False)
+    monthly_interest = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = relationship('User', back_populates='loans')
 
 with app.app_context():
     db.create_all()
@@ -85,10 +109,17 @@ def loans():
 
 @app.route("/manage-loans", methods=["GET", "POST"])
 @login_required
-def loans_manage():
+def manage_loans():
     if request.method == "GET":
-        
-        return render_template("manage-loans.html")
+        loans = db.session.scalars(select(Loans).where(Loans.user_id == session["user_id"])).all()
+        total = 0
+        interest = 0
+
+        for loan in loans:
+            total += loan.amount
+            interest += loan.monthly_interest
+
+        return render_template("manage-loans.html", loans=loans, usd=usd, percent=percent, decimal=decimal, total=total, interest=interest)
 
 
 @app.route("/budget", methods=["GET", "POST"])
@@ -121,7 +152,6 @@ def login():
         username_real = False
         for user_obj in  result.scalars():
             if username == user_obj.username:
-                # Username exists
                 username_real = True
                 copies += 1
         if not username_real:
@@ -202,18 +232,63 @@ def signout():
     session.clear()
     return redirect("/login")
 
+@app.route("/add-loan", methods=["POST", "GET"])
+def add_loan():
+
+    if request.method == "POST":
+        print("posting")
+        if not request.form.get("add-loan-name") or not request.form.get("add-loan-amount") or not request.form.get("add-loan-interest"):
+            flash("All fields required", "danger")
+            print(get_flashed_messages())
+            return redirect("/add-loan")
+
+        name = request.form.get("add-loan-name")
+        amount = request.form.get("add-loan-amount")
+        interest = request.form.get("add-loan-interest")
+
+        try:
+            amount = int(amount)
+            interest = int(interest)
+            monthly_interest = ((amount * (interest / 100)) / 12)
+        
+        except ValueError:
+            if type(amount) != int:
+                flash("Enter dollar amount of loan", "danger")
+                return redirect("/add-loan")
+            
+            if type(interest) != int:
+                flash("Enter interest percentage of loan", "danger")
+                return redirect("/add-loan")
+        
+        loan = Loans(name=name, amount=amount, interest=interest, monthly_interest=monthly_interest, user_id=session["user_id"])
+
+        db.session.add(loan)
+        db.session.commit()
+
+        flash("Loan added successfully!")
+        return redirect("/manage-loans")
+    
+    else:
+        loans = get_loans(session["user_id"])
+        return render_template("manage-loans-add-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+
+# @app.route("manage-loans-add-form.html")
+
+
+
+
+
+
 if __name__ == "__main__":
     db.create_all()
     app.run(debug=True)
-
 
 
 def check_spaces(string):
     if " " in string:
         return True
     else:
-        return False
-    
+        return False  
 
 def get_name(user_id):
     name = db.session.execute(select(User.name).where(user_id == User.id)).scalar()
@@ -222,3 +297,22 @@ def get_name(user_id):
 def get_username(user_id):
     username = db.session.execute(select(User.username).where(user_id == User.id)).scalar()
     return username
+
+def get_loans(user_id):
+    loans = db.session.scalars(select(Loans).where(Loans.user_id == user_id)).all()
+    return loans
+
+def get_total(loans):
+    total = 0
+
+    for loan in loans:
+        total += loan.amount
+    
+    return total
+
+def get_interest(loans):
+    interest = 0
+    for loan in loans:
+        interest += loan.monthly_interest
+    
+    return interest
