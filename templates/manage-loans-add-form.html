@@ -1,0 +1,28 @@
+{% extends "manage-loans.html" %}
+
+{% block sidebar %}
+<div id="add-loan-form" class="visible form">
+
+    <button onclick="window.location.href='/manage-loans'" class="back-button">
+        <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+    </button>
+
+    <h2 class="h1-white">Add Loan</h2>
+    <form class="form" action="/add-loan" method="post" autocomplete="off">
+        <label class="form-label">Loan name</label>
+        <input type="text" class="text-box" name="add-loan-name" id="add-loan-name" placeholder="Loan name" autofocus>
+        <span></span>
+        
+        <label class="form-label">Loan balance</label>
+        <input type="text" class="text-box usd" name="add-loan-amount" id="add-loan-amount" placeholder="Loan balance" onkeypress="return onlyNumberKey(event)">
+        <span></span>
+        
+        <label class="form-label">Interest rate</label>
+        <input type="text" class="text-box percent" name="add-loan-interest" id="add-loan-interest" placeholder="Interest rate" onkeypress="return onlyNumberKey(event)">
+        <span></span>
+        
+        <input type="submit" value="Add" class="button">
+
+    </form>
+</div>
+{% endblock %}

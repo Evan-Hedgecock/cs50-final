@@ -24,9 +24,6 @@
         function toggleSidebar() {
             document.getElementById('s-m').classList.toggle('visible');
             document.getElementById('s-m').classList.toggle('collapse');
-            
-            document.getElementById('s-o').classList.toggle('visible');
-            document.getElementById('s-o').classList.toggle('collapse');
             }
     
         function openAddForm() {
@@ -50,6 +47,49 @@
 
         function goBack(openForm) {
             openForm
+        }
+        
+        function onlyNumberKey(evt) {
+            // Only ASCII character in that range allowed
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                return false;
+            return true;
+        }
+
+        function formatToUSD(value) {
+            let number = parseFloat(value);
+            if (isNaN(number)) {
+                return "";
+            }
+            // Format number with commas and two decimal places
+            return "$" + number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatToPercentage(value) {
+            let number = parseFloat(value);
+            if (isNaN(number)) {
+                return "";
+            }
+            // Format number to two decimal places with percent sign
+            return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+        }
+
+        function formatInput(event) {
+            const input = event.target;
+            const value = input.value.replace(/,/g, ''); // Remove commas for proper formatting
+            const formatType = input.dataset.format; // Determine format type using data attribute
+
+            let formattedValue;
+            if (formatType === "usd") {
+                formattedValue = formatToUSD(value);
+            } else if (formatType === "percentage") {
+                formattedValue = formatToPercentage(value);
+            }
+
+            // Find the corresponding <span> element to update
+            const formattedSpan = input.nextElementSibling;
+            formattedSpan.innerText = formattedValue;
         }
 
     </script>
@@ -80,7 +120,10 @@
         {% endif %}
     {% endwith %}
     
-        {% block main %}{% endblock %}
+        {% block main %}
+            {% block sidebar %}
+            {% endblock %}
+        {% endblock %}
     </div>
     <footer>
         <p>Wisp by Evan Hedgecock</p>

@@ -1,10 +1,5 @@
 {% extends "layout.html" %}
 
-<script>
-
-    
-
-</script>
 
 {% block header %}
 <ul class="nav-list flex-center">
@@ -38,89 +33,95 @@
 
 {% block main %}
 <div class="section-container">
-
     <div class="sidebar">
-
-        <div id="s-o" class="sidebar-overview visible">
-            <h2 class="h3-black">Total balance: $25,000</h2>
-            <h2 class="h3-black">Monthly interest: $560</h2>
+        <div id="s-o" class="sidebar-overview">
+            <h2 class="h3-black">Total balance: {{ usd(total) }}</h2>
+            <h2 class="h3-black">Monthly interest: {{ usd(interest) }}</h2>
         </div>
+    {% block sidebar %}
         
-        <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
-            <li class="menu-item">
-                <a onclick="openPaymentForm()" id="make-payment" class="menu-button">Make payment</a>
-            </li>
-            <li class="menu-item">
-                <a onclick="openAddForm()" id="add-loan" class="menu-button">Add loan</a>
-            </li>
-            <li class="menu-item">
-                <a onclick="openEditForm()" id="edit-loan" class="menu-button">Edit loan</a>
-            </li>
-        </ul>
+            <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
+                <li class="menu-item">
+                    <a onclick="openPaymentForm()" id="make-payment" class="menu-button">Make payment</a>
+                </li>
+                <li class="menu-item">
+                    <a onclick="openAddForm()" id="add-loan" class="menu-button">Add loan</a>
+                </li>
+                <li class="menu-item">
+                    <a onclick="openEditForm()" id="edit-loan" class="menu-button">Edit loan</a>
+                </li>
+            </ul>
 
-        <!-- <div id="hidden-form-back-button" class="back-button collapse">
-            <button class="button">
-                Go back
-            </button>
-        </div> -->
+            <div id="make-payment-form" class="collapse form">
 
-        <div id="make-payment-form" class="collapse form">
-
-            <button onclick="goBack(openPaymentForm())" class="back-button">
-                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
-            </button>
-    
-
-            <h2 class="h1-white">Make Payment</h2>
-            <form class="form" action="/make-payment" method="post" autocomplete="off">
-                <label class="form-label">Make payment to:</label>
-                <select type="select" class="text-box">
-                    <option value="Select loan" disabled selected>Select loan</option>
-                <label class="form-label">Payment amount</label>
-                <input type="text" class="text-box" placeholder="Payment amount">
-                <!-- <label class="form-label">Interest rate</label>
-                <input type="text" class="text-box" placeholder="Interest rate"> -->
-                <input type="submit" value="Confirm" class="button">
-            </form>
-        </div>
+                <button onclick="goBack(openPaymentForm())" class="back-button">
+                    <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+                </button>
         
-        <div id="add-loan-form" class="collapse form">
 
-            <button onclick="goBack(openAddForm())" class="back-button">
-                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
-            </button>
+                <h2 class="h1-white">Make Payment</h2>
+                <form class="form" action="/make-payment" method="post" autocomplete="off">
+                    <label class="form-label">Make payment to:</label>
+                    <select type="select" class="text-box">
+                        <option value="Select loan" disabled selected>Select loan</option>
+                    <label class="form-label">Payment amount</label>
+                    <input type="text" class="text-box usd" placeholder="Payment amount" data-format="usd" onkeypress="return onlyNumberKey(event)">
+                    <span></span>
+                    <input type="submit" value="Confirm" class="button">
+                </form>
+            </div>
+            
+            <div id="add-loan-form" class="collapse form">
 
-            <h2 class="h1-white">Add Loan</h2>
-            <form class="form" action="/add-loan" method="post" autocomplete="off">
-                <label class="form-label">Loan name</label>
-                <input type="text" class="text-box" placeholder="Loan name" autofocus>
-                <label class="form-label">Loan amount</label>
-                <input type="text" class="text-box" placeholder="Loan amount">
-                <label class="form-label">Interest rate</label>
-                <input type="text" class="text-box" placeholder="Interest rate">
-                <input type="submit" value="Add" class="button">
-            </form>
-        </div>
+                <button onclick="goBack(openAddForm())" class="back-button">
+                    <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+                </button>
 
-        <div id="edit-loan-form" class="collapse form">
+                <h2 class="h1-white">Add Loan</h2>
+                <form class="form" action="/add-loan" method="post" autocomplete="off">
+                    <label class="form-label">Loan name</label>
+                    <input type="text" class="text-box" name="add-loan-name" placeholder="Loan name" autofocus>
+                    
+                    <label class="form-label">Loan balance</label>
+                    <input type="text" class="text-box usd" name="add-loan-amount" placeholder="Loan balance" data-format="usd" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
+                    <span class="formatted-value"></span>
+                    
+                    <label class="form-label">Interest rate</label>
+                    <input type="text" class="text-box percent" name="add-loan-interest" placeholder="Interest rate" data-format="percentage" oninput="formatInput(event)" onkeypress="return onlyNumberKey(event)">
+                    <span class="formatted-value"></span>
+                    
+                    <input type="submit" value="Add" class="button">
+                </form>
+            </div>
 
-            <button onclick="goBack(openEditForm())" class="back-button">
-                <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
-            </button>
+            <div id="edit-loan-form" class="collapse form">
 
-            <h2 class="h1-white">Edit Loan</h2>
-            <form class="form" action="/edit-loan" method="post" autocomplete="off">
-                <label class="form-label">Loan name</label>
-                <input type="text" class="text-box" placeholder="Loan name" autofocus>
-                <label class="form-label">Loan amount</label>
-                <input type="text" class="text-box" placeholder="Loan amount">
-                <label class="form-label">Interest rate</label>
-                <input type="text" class="text-box" placeholder="Interest rate">
-                <input type="submit" value="Add" class="button">
-            </form>
-        </div>
+                <button onclick="goBack(openEditForm())" class="back-button">
+                    <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+                </button>
 
+                <h2 class="h1-white">Edit Loan</h2>
+                <form class="form" action="/edit-loan" method="post" autocomplete="off">
+                    <label class="form-label">Loan name</label>
+                    <select type="text" class="text-box">
+                        <option selected disabled class="text-box">Select Loan</option>
+                        {% if loans %}
+                            {% for loan in loans %}
+                                <option>{{ loan.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                            
+                    <label class="form-label">Update balance</label>
+                    <input type="text" class="text-box usd" placeholder="Update balance" data-format="usd" onkeypress="return onlyNumberKey(event)">
+                    <span></span>
+                    <label class="form-label">Update interest rate</label>
+                    <input type="text" class="text-box percent" placeholder="Update interest rate" data-format="percentage" onkeypress="return onlyNumberKey(event)">
+                    <span></span>
+                    <input type="submit" value="Confirm" class="button">
+                </form>
+            </div>
 
+        {% endblock %}
 
     </div>
 
@@ -141,23 +142,24 @@
     <div class="loan-table">
         <table class="table h3">
             <tr>
-                <th>Loan</th>
-                <th>Amount</th>
+                <th>Name</th>
+                <th>Balance</th>
                 <th>Interest rate</th>
-                <th>Monthly accrual</th>
+                <th>Monthly interest</th>
             </tr>
-            <tr>
-                <td>Loan 1</td>
-                <td>$25,000</td>
-                <td>8.00%</td>
-                <td>$166.66</td>
-            </tr>
-            <tr>
-                <td>Loan 2</td>
-                <td>$8,000</td>
-                <td>12.00%</td>
-                <td>$85.32</td>
-            </tr>
+
+            {% if loans %}
+    
+                {% for loan in loans %}
+                    <tr>
+                        <td>{{ loan.name }}</td>
+                        <td>{{ usd(loan.amount|int) }}</td>
+                        <td>{{ percent(loan.interest|int) }}</td>
+                        <td>{{ usd(loan.monthly_interest) }}</td>
+                    </tr>
+                {% endfor %}
+
+            {% endif %}
         </table>
     </div>
 
