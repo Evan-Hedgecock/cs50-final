@@ -162,7 +162,7 @@ def login():
 
         if username_real and copies == 1 and check_password_hash(hash, entered_password):
             session["user_id"] = db.session.scalar(select(User.id).where(User.username == username and User.password == hash))
-            flash("Login success", "success")
+            flash(f"You're logged in as {username}", "success")
             return redirect("/")
         else:
             flash("Password incorrect", "danger")
@@ -188,7 +188,7 @@ def update_password():
 @app.route("/update-username", methods=["POST"])
 @login_required
 def update_username():
-    flash("Username updated", "success")
+    flash("Username updated to", "success")
     set_form_name("update-username-form")
     return redirect("/account")
 
@@ -230,7 +230,7 @@ def signup():
             user = User(name=name, username=username, password=generate_password_hash(password))
             db.session.add(user)
             db.session.commit()
-            flash("Registration success!", "success")
+            flash(f"Congrats {name}, registration success!", "success")
             session["user_id"] = db.session.scalar(select(User.id).where(User.username == username))
             return redirect("/")
         
@@ -246,16 +246,16 @@ def signout():
     return redirect("/login")
 
 @app.route("/add-loan", methods=["POST", "GET"])
+@login_required
 def add_loan():
 
     if request.method == "POST":
         loan = get_loan("add", session["user_id"])
         set_form_name("add-loan-form")
-        print("Session form_name:", session["form_name"])
         if isinstance(loan, Loans):
             db.session.add(loan)
             db.session.commit()
-            flash("Loan added successfully!", "success")
+            flash(f"{loan.name} added successfully!", "success")
             return redirect("/manage-loans")
         else:
             url = loan
@@ -263,7 +263,76 @@ def add_loan():
     
     else:
         loans = get_loans(session["user_id"])
-        return render_template("manage-loans-add-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+        return render_template("add-loan-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+
+@app.route("/edit-loan", methods=["POST", "GET"])
+@login_required
+def edit_loan():
+
+    set_form_name("edit-loan-form")
+
+    if request.method == "POST":
+        if not request.form.get("edit-selected-loan"):
+            flash("Please select loan to edit", "warning")
+            return redirect("/edit-loan")
+        
+        edit_loan_id = request.form.get("selected-option-id")
+        selected_loan = db.session.execute(select(Loans).where(Loans.id == edit_loan_id)).scalar()
+        updated_name = selected_loan.name
+
+        if not request.form.get("edit-name") and not request.form.get("edit-amount") and not request.form.get("edit-interest"):
+            flash("No changes made, please enter at least one field", "warning")
+            return redirect("/edit-loan")
+        
+        if request.form.get("edit-name"):
+            selected_loan.name = request.form.get("edit-name")
+            flash(f"{updated_name} name updated", "success")
+        if request.form.get("edit-amount"):
+            new_amount = request.form.get("edit-amount")
+            try:
+                selected_loan.amount = int(new_amount)
+                flash(f"{updated_name} balance updated", "success")
+            except ValueError:
+                flash(f"{updated_name} balance not updated, enter number only", "danger")
+        if request.form.get("edit-interest"):
+            new_interest = request.form.get("edit-interest")
+            try:
+                selected_loan.interest = int(new_interest)
+                flash(f"{updated_name} interest updated", "success")
+            except ValueError:
+                flash(f"{updated_name} interest not updated, enter number only", "danger")
+        
+        db.session.commit()
+        return redirect("/edit-loan")
+
+    else:
+        loans = get_loans(session["user_id"])
+        return render_template("edit-loan-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+
+@app.route("/delete-loan", methods=["POST", "GET"])
+@login_required
+def delete_loan():
+    set_form_name("delete-loan-form")
+
+    if request.method == "POST":
+
+        if not request.form.get("delete-selected-loan"):
+            flash("Must select loan to delete", "warning")
+            return redirect("/delete-loan")
+        
+        delete_loan_id = request.form.get("selected-option-id")
+
+        delete_loan = db.session.scalar(select(Loans).where(Loans.id == delete_loan_id))
+        db.session.delete(delete_loan)
+        db.session.commit()
+        flash(f"{delete_loan.name} deleted successfully", "success")
+        return redirect("/manage-loans")
+        
+    else:
+        loans = get_loans(session["user_id"])
+        return render_template("delete-loan-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+
+
 
 
 if __name__ == "__main__":
@@ -307,7 +376,7 @@ def get_interest(loans):
 def get_loan(form, user_id):
     response = "/" + form + "-loan"
     responding = True
-    while responding:            
+    while responding:       
         if not request.form.get(form + "-name") or not request.form.get(form + "-amount") or not request.form.get(form + "-interest"):
             flash("All fields required", "danger")
             responding = False

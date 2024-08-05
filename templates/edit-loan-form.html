@@ -1,0 +1,38 @@
+{% extends "manage-loans.html" %}
+
+
+{% block sidebar %}
+<div id="edit-loan-form-container" class="visible form">
+
+    <button onclick="window.location.href='/manage-loans'" class="back-button">
+        <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+    </button>
+
+    <h2 class="h1-white">Edit Loan</h2>
+    <form class="form" action="/edit-loan" id="edit-loan-form" method="post" autocomplete="off" onsubmit="setSelectedOptionId('edit-selected-loan')">
+        <label class="form-label">Loan name</label>
+        <select type="text" class="text-box" id="edit-selected-loan" name="edit-selected-loan">
+            <option selected disabled class="text-box">Select Loan</option>
+            {% if loans %}
+                {% for loan in loans %}
+                    <option id="{{ loan.id }}">{{ loan.name }}</option>
+                {% endfor %}
+            {% endif %}
+
+        <label class="form-label">Change name</label>
+        <input type="text" class="text-box" id="edit-name" name="edit-name" placeholder="Change name">
+                
+        <label class="form-label">Update balance</label>
+        <input type="text" class="text-box usd" id="edit-amount" name="edit-amount" placeholder="Update balance" data-format="usd" onkeypress="return onlyNumberKey(event)">
+        <span></span>
+
+        <label class="form-label">Update interest rate</label>
+        <input type="text" class="text-box percent" placeholder="Update interest rate" id="edit-interest" name="edit-interest" data-format="percentage" onkeypress="return onlyNumberKey(event)">
+        <span></span>
+
+        <input type="hidden" id="selected-option-id" name="selected-option-id">
+
+        <input type="submit" value="Confirm" class="button">
+    </form>
+</div>
+{% endblock %}

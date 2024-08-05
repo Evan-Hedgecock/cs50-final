@@ -34,21 +34,25 @@
 {% block main %}
 <div class="section-container">
     <div class="sidebar">
+    {% block sidebar %}
         <div id="s-o" class="sidebar-overview">
             <h2 class="h3-black">Total balance: {{ usd(total) }}</h2>
             <h2 class="h3-black">Monthly interest: {{ usd(interest) }}</h2>
         </div>
-    {% block sidebar %}
+    
         
             <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
                 <li class="menu-item">
-                    <a onclick="openPaymentForm()" id="make-payment" class="menu-button">Make payment</a>
+                    <a href="/make-payment" id="make-payment" class="menu-button">Make payment</a>
                 </li>
                 <li class="menu-item">
-                    <a onclick="openAddForm()" id="add-loan" class="menu-button">Add loan</a>
+                    <a href="/add-loan" id="add-loan" class="menu-button">Add loan</a>
                 </li>
                 <li class="menu-item">
-                    <a onclick="openEditForm()" id="edit-loan" class="menu-button">Edit loan</a>
+                    <a href="/edit-loan" id="edit-loan" class="menu-button">Edit loan</a>
+                </li>
+                <li class="menu-item">
+                    <a href="/delete-loan" id="delete-loan" class="menu-button">Delete loan</a>
                 </li>
             </ul>
 
