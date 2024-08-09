@@ -236,17 +236,17 @@ a {
     font-size: var(--button-size);
     font-weight: 400;
     border-radius: var(--button-curve);
-    padding: 15px 45px;
+    padding: 15px 30px;
     border: hidden;
-    transition: width .5s;
+    transition: min-width .5s;
     max-width: 25vw;
-    width: 50%;
+    min-width: 50%;
     max-height: 100%;
 }
 
 .button:hover {
     cursor: pointer;
-    width: 60%;
+    min-width: 60%;
 }
 
 .flashes {

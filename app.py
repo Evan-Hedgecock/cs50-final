@@ -332,7 +332,31 @@ def delete_loan():
         loans = get_loans(session["user_id"])
         return render_template("delete-loan-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
 
-
+@app.route("/make-payment", methods=["POST", "GET"])
+@login_required
+def make_payment():
+    set_form_name("make-payment-form")
+    if request.method == "GET":
+        loans = get_loans(session["user_id"])
+        return render_template("make-payment-form.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+       
+    else:
+        if not request.form.get("payment-selected-loan"):
+            flash("Please select loan", "warning")
+            return redirect("/make-payment")
+        if not request.form.get("payment-amount"):
+            flash("Please enter payment amount", "warning")
+            return redirect("/make-payment")
+        
+        payment_loan_id = request.form.get("selected-option-id")
+        payment_loan = db.session.scalar(select(Loans).where(Loans.id == payment_loan_id))
+        payment_loan.amount = payment_loan.amount - int(request.form.get("payment-amount"))
+        if payment_loan.amount < 0:
+            flash("Payment amount cannot exceed loan balance", "danger")
+            return redirect("/make-payment")
+        else:
+            db.session.commit()
+        return redirect("/make-payment")
 
 
 if __name__ == "__main__":
