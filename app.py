@@ -43,23 +43,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
-# class User(db.Model):
-#     id: Mapped[int] = mapped_column(primary_key=True)
-#     name: Mapped[str]
-#     username: Mapped[str] = mapped_column(unique=True)
-#     password: Mapped[str]
-#     loans: Mapped[List['Loans']] = relationship('Loans', back_populates='user', cascade='all, delete-orphan')
-
-# class Loans(db.Model):
-#     id: Mapped[int] = mapped_column(primary_key=True)
-#     name: Mapped[str]
-#     amount: Mapped[int]
-#     interest: Mapped[int]
-#     principal: Mapped[int]
-#     user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'))
-#     user: Mapped['User'] = relationship('User', back_populates='loans')
-
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -359,7 +342,50 @@ def make_payment():
             update_monthly_interest(payment_loan)
             db.session.commit()
         return redirect("/make-payment")
+    
+@app.route("/simulate-payments", methods=["GET", "POST"])
+@login_required
+def simulate_payments():
+    set_form_name("simulate-payments-form")
+    error = False
+    loans = get_loans(session["user_id"])
 
+    if request.method == "GET":
+        return render_template("simulate-payments.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
+   
+    else:
+        if not request.form.get("simulate-amount") or not request.form.get("simulate-frequency") or not request.form.get("simulate-strategy") or not request.form.get("simulate-duration"):
+            flash("All fields required", "danger")
+            return redirect("/simulate-payments")
+
+        frequency = request.form.get("simulate-frequency")
+        strategy = request.form.get("simulate-strategy")
+
+        try:
+            amount = float(request.form.get("simulate-amount"))
+        except ValueError:
+            flash("Amount must be number", "danger")
+            error = True
+            
+        try:
+            duration = float(request.form.get("simulate-duration"))
+        except ValueError:
+            flash("Duration must be number", "danger")
+            error = True
+            
+        if error:
+            return redirect("/simulate-payments")
+
+        # Perform different payment calculations based on strategy
+        if strategy == "avalanche":
+            pass
+        if strategy == "snowball":
+            pass
+        if strategy == "weighted":
+            pass
+            
+
+        return redirect("/simulate-payments")
 
 if __name__ == "__main__":
     db.create_all()

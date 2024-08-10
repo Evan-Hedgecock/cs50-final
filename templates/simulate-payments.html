@@ -1,0 +1,91 @@
+{% extends "loans.html" %}
+
+
+{% block sidebar %}
+<div id="simulate-payment-form-container" class="visible form">
+
+    <button onclick="window.location.href='/loans'" class="back-button">
+        <?xml version="1.0" ?><svg class="back-button-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:20px;}</style></defs><g data-name="Layer 2" id="Layer_2"><g data-name="E421, Back, buttons, multimedia, play, stop" id="E421_Back_buttons_multimedia_play_stop"><circle class="cls-1" cx="256" cy="256" r="246"/><line class="cls-1" x1="352.26" x2="170.43" y1="256" y2="256"/><polyline class="cls-1" points="223.91 202.52 170.44 256 223.91 309.48"/></g></g></svg>
+    </button>
+
+    <h2 class="h1-white">Simulate Payments</h2>
+    <form class="form" action="/simulate-payments" id="simulate-payments-form" method="post" autocomplete="off">
+        <label class="form-label">Loan name</label>
+        <select type="text" class="text-box" id="simulate-frequency" name="simulate-frequency">
+            <option selected disabled class="text-box">Frequency</option>
+            <option value="weekly" class="text-box">Weekly</option>
+            <option value="bi-weekly" class="text-box">Bi-weekly</option>
+            <option value="monthly" class="text-box">Monthly</option>
+        </select>
+    
+        <label class="form-label">Amount</label>
+        <input type="text" class="text-box" id="simulate-amount" name="simulate-amount" placeholder="Amount" onkeypress="return onlyNumberKey(event)">
+
+        <label class="form-label">Strategy</label>
+        <select type="text" class="text-box" id="simulate-strategy" name="simulate-strategy">
+            <option selected disabled class="text-box">Strategy</option>
+            <option value="avalanche" class="text-box">Avalanche</option>
+            <option value="weighted" class="text-box">Weighted</option>
+            <option value="snowball" class="text-box">Snowball</option>
+        </select>
+
+        <label class="form-label">Duration</label>
+        <input type="text" class="text-box" id="simulate-duration" name="simulate-duration" placeholder="Duration" onkeypress="return onlyNumberKey(event)">
+
+        <input type="submit" value="Simulate" class="button">
+    </form>
+</div>
+{% endblock %}
+
+{% block main_content %}   
+<div class="chart">
+    <canvas id="simulate-payments-chart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('simulate-payments-chart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+    <!-- <table class="table h3">
+        <tr>
+            <th>Name</th>
+            <th>Balance</th>
+            <th>Interest rate</th>
+            <th>Monthly interest</th>
+        </tr>
+
+        {% if loans %}
+
+            {% for loan in loans %}
+            {% if loan.amount > 0 %}
+                <tr>
+                    <td>{{ loan.name }}</td>
+                    <td>{{ usd(loan.amount) }}</td>
+                    <td>{{ percent(loan.interest) }}</td>
+                    <td>{{ usd(loan.monthly_interest) }}</td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+
+        {% endif %}
+    </table> -->
+{% endblock %}

@@ -44,7 +44,7 @@ body {
 
 .main {
     height: auto;
-    min-height: 85vh;
+    min-height: 90vh;
     max-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -599,4 +599,11 @@ footer {
 
 .form h2 {
     margin: 0px;
+}
+
+.chart {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
