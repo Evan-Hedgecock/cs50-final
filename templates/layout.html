@@ -30,24 +30,12 @@
     </div>
     <div class="main">
     {% block welcome %}{% endblock %}
-
-    <!-- {% with messages = g.flashed_messages %}
-        {% if messages %}
-            <ul class="flashes">
-            {% for category, message in messages %}
-                <li class="alert alert-{{ category }} h3" role="alert">
-                    {{ message }}
-                </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %} -->
-
     
     <div id="flashed-messages-container"></div>
         {% block main %}
             {% block sidebar %}
             {% endblock %}
+            
         {% endblock %}
     </div>
     <footer>
@@ -92,9 +80,13 @@
         function onlyNumberKey(evt) {
             // Only ASCII character in that range allowed
             var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            console.log(ASCIICode)
+            if ((ASCIICode <= 57 && ASCIICode >= 48) || ASCIICode == 46) {
+                return true;
+            }
+            else {
                 return false;
-            return true;
+            }
         }
 
         function formatToUSD(value) {
