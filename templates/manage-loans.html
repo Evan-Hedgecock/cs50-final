@@ -54,13 +54,16 @@
                 <li class="menu-item">
                     <a href="/delete-loan" id="delete-loan" class="menu-button">Delete loan</a>
                 </li>
+                <li class="menu-item">
+                    <a href="/loans" id="loans" class="menu-button">All loan options</a>
+                </li>
             </ul>
 
         {% endblock %}
 
     </div>
     
-    <div class="loan-table">
+    <div class="main-panel">
         <table class="table h3">
             <tr>
                 <th>Name</th>
@@ -72,12 +75,14 @@
             {% if loans %}
     
                 {% for loan in loans %}
+                {% if loan.amount > 0 %}
                     <tr>
                         <td>{{ loan.name }}</td>
-                        <td>{{ usd(loan.amount|int) }}</td>
-                        <td>{{ percent(loan.interest|int) }}</td>
+                        <td>{{ usd(loan.amount) }}</td>
+                        <td>{{ percent(loan.interest) }}</td>
                         <td>{{ usd(loan.monthly_interest) }}</td>
                     </tr>
+                {% endif %}
                 {% endfor %}
 
             {% endif %}
