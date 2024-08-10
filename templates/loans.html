@@ -34,4 +34,53 @@
 {% endblock %}
 
 {% block main %}
+<div class="section-container">
+    <div class="sidebar">
+    {% block sidebar %}
+        <div id="s-o" class="sidebar-overview">
+            <h2 class="h3-black">Total balance: {{ usd(total) }}</h2>
+            <h2 class="h3-black">Monthly interest: {{ usd(interest) }}</h2>
+        </div>
+    
+        
+            <ul id="s-m" class="menu flex-center h3 sidebar-buttons visible">
+                <li class="menu-item">
+                    <a href="/manage-loans" id="manage-loans" class="menu-button">Manage loans</a>
+                </li>
+                <li class="menu-item">
+                    <a href="/simulate-payments" id="simulate-payments" class="menu-button">Simulate payments</a>
+                </li>                
+            </ul>
+
+        {% endblock %}
+
+    </div>
+    
+    <div class="main-panel">
+        <table class="table h3">
+            <tr>
+                <th>Name</th>
+                <th>Balance</th>
+                <th>Interest rate</th>
+                <th>Monthly interest</th>
+            </tr>
+
+            {% if loans %}
+    
+                {% for loan in loans %}
+                {% if loan.amount > 0 %}
+                    <tr>
+                        <td>{{ loan.name }}</td>
+                        <td>{{ usd(loan.amount|int) }}</td>
+                        <td>{{ percent(loan.interest|int) }}</td>
+                        <td>{{ usd(loan.monthly_interest) }}</td>
+                    </tr>
+                {% endif %}
+                {% endfor %}
+
+            {% endif %}
+        </table>
+    </div>
+
+</div>
 {% endblock %}
