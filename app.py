@@ -302,7 +302,7 @@ def edit_loan():
                 flash(f"{updated_name} interest updated", "success")
             except ValueError:
                 flash(f"{updated_name} interest not updated, enter number only", "danger")
-        
+        update_monthly_interest(selected_loan)
         db.session.commit()
         return redirect("/edit-loan")
 

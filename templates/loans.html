@@ -70,8 +70,8 @@
                 {% if loan.amount > 0 %}
                     <tr>
                         <td>{{ loan.name }}</td>
-                        <td>{{ usd(loan.amount|int) }}</td>
-                        <td>{{ percent(loan.interest|int) }}</td>
+                        <td>{{ usd(loan.amount) }}</td>
+                        <td>{{ percent(loan.interest) }}</td>
                         <td>{{ usd(loan.monthly_interest) }}</td>
                     </tr>
                 {% endif %}

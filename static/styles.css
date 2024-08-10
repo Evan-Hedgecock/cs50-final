@@ -43,8 +43,10 @@ body {
 }
 
 .main {
+    display: flex;
+    flex-flow: column wrap;
     height: 80vh;
-    margin-top: 75px;
+    margin: 30px 0px;
     /* visibility: visible; */
 }
 
@@ -102,7 +104,7 @@ a {
 
 .header {
     font-size: var(--h2-size);
-    height: 135px;
+    height: 10vh;
     width: 100%;
     background-image: linear-gradient(var(--purple), var(--pink));
     box-shadow: var(--sm-shadow);
@@ -132,6 +134,7 @@ a {
     box-sizing: border-box;
     padding-left: 0;
     list-style-type: none;
+    margin: 0px;
 }
 
 .nav-link {
@@ -165,10 +168,12 @@ a {
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
+    flex: 0 1 auto;
 }
 
 .login {
-    margin: auto;
+    flex: 1 1 auto
+    /* margin: auto; */
 }
 
 .signup {
@@ -373,6 +378,7 @@ a {
 .card-primary {
     background-image: linear-gradient(to bottom, var(--purple), var(--pink));
     color: var(--white);
+    flex: 1 1 auto;
 }
 
 .card-container {
@@ -393,7 +399,7 @@ a {
     justify-content: start;
     width: 30%;
     height: 80%;
-    margin: 10px;
+    margin: 10px 30px;
     border-radius: var(--input-curve);
     box-shadow: var(--md-shadow);
 }
@@ -459,10 +465,10 @@ a {
 
 .section-container {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: start;
     justify-content: space-evenly;
-    height: 90%;
+    flex: 1 1 auto;
 }
 
 
@@ -476,7 +482,8 @@ a {
     border-radius: var(--button-curve);
     height: 100%;
     max-height: fit-content;
-    width: 25%;
+    width: 30%;
+    flex: 0 1 auto;
 }
 
 .sidebar-overview {
@@ -499,10 +506,11 @@ a {
     display: flex;
     align-items: start;
     justify-content: center;
-    width: 50%;
+    width: 60%;
     height: 100%;
     background-image: linear-gradient(to bottom, var(--purple), var(--pink));
     border-radius: var(--button-curve);
+    flex: 0 1 auto;
 
 }
 
@@ -510,6 +518,7 @@ a {
     text-align: center;
     justify-content: start;
     padding: 20px;
+    width: 100%;
 }
 
 td, th {
@@ -523,6 +532,7 @@ th {
 
 
 footer {
+    height: 5vh;
     display: flex;
     align-items: end;
     justify-content: center;
