@@ -280,10 +280,6 @@ footer {
     flex: 0 1 auto;
 }
 
-#flashed-messages-container {
-
-}
-
 .danger {
     background-color: #ff000080;
 }
