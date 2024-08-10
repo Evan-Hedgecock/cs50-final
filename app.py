@@ -105,7 +105,8 @@ def index():
 @app.route("/loans", methods=["GET", "POST"])
 @login_required
 def loans():
-    return render_template("loans.html")
+    loans = get_loans(session["user_id"])
+    return render_template("loans.html", loans=loans, usd=usd, percent=percent, decimal=decimal, total=get_total(loans), interest=get_interest(loans))
 
 @app.route("/manage-loans", methods=["GET"])
 @login_required
@@ -290,14 +291,14 @@ def edit_loan():
         if request.form.get("edit-amount"):
             new_amount = request.form.get("edit-amount")
             try:
-                selected_loan.amount = int(new_amount)
+                selected_loan.amount = float(new_amount)
                 flash(f"{updated_name} balance updated", "success")
             except ValueError:
                 flash(f"{updated_name} balance not updated, enter number only", "danger")
         if request.form.get("edit-interest"):
             new_interest = request.form.get("edit-interest")
             try:
-                selected_loan.interest = int(new_interest)
+                selected_loan.interest = float(new_interest)
                 flash(f"{updated_name} interest updated", "success")
             except ValueError:
                 flash(f"{updated_name} interest not updated, enter number only", "danger")
@@ -350,11 +351,12 @@ def make_payment():
         
         payment_loan_id = request.form.get("selected-option-id")
         payment_loan = db.session.scalar(select(Loans).where(Loans.id == payment_loan_id))
-        payment_loan.amount = payment_loan.amount - int(request.form.get("payment-amount"))
+        payment_loan.amount = payment_loan.amount - float(request.form.get("payment-amount"))
         if payment_loan.amount < 0:
             flash("Payment amount cannot exceed loan balance", "danger")
             return redirect("/make-payment")
         else:
+            update_monthly_interest(payment_loan)
             db.session.commit()
         return redirect("/make-payment")
 
@@ -411,8 +413,8 @@ def get_loan(form, user_id):
         interest = request.form.get(form + "-interest")
 
         try:
-            amount = int(amount)
-            interest = int(interest)
+            amount = float(amount)
+            interest = float(interest)
             monthly_interest = ((amount * (interest / 100)) / 12)
         
         except ValueError:
@@ -437,3 +439,6 @@ def get_loan(form, user_id):
 
 def set_form_name(form_name):
     session["form_name"] = form_name
+
+def update_monthly_interest(loan):
+    loan.monthly_interest = (loan.amount * (loan.interest / 100)) / 12
