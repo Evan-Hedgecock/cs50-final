@@ -33,8 +33,9 @@
 </ul>
 {% endblock %}
 
+
 {% block main %}
-<div class="section-container">
+
     <div class="sidebar">
     {% block sidebar %}
         <div id="s-o" class="sidebar-overview">
@@ -51,12 +52,11 @@
                     <a href="/simulate-payments" id="simulate-payments" class="menu-button">Simulate payments</a>
                 </li>                
             </ul>
-
-        {% endblock %}
-
+    {% endblock %}
     </div>
     
-    <div class="main-panel">
+    <div class="main-content">
+    {% block main_content %}
         <table class="table h3">
             <tr>
                 <th>Name</th>
@@ -66,7 +66,6 @@
             </tr>
 
             {% if loans %}
-    
                 {% for loan in loans %}
                 {% if loan.amount > 0 %}
                     <tr>
@@ -77,10 +76,9 @@
                     </tr>
                 {% endif %}
                 {% endfor %}
-
             {% endif %}
         </table>
+    {% endblock %}
     </div>
 
-</div>
 {% endblock %}

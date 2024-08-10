@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
 
-{% block script %}
-
-{% endblock %}
+{% block script %}{% endblock %}
 
 {% block header %}
-    <ul class="nav-list flex-center">
+<ul class="nav-list flex-center">
     <li class="nav-item flex-center active-nav">
         <a href="/" class="nav-link">Home</a>
     </li>
@@ -35,51 +33,47 @@
 {% endblock %}
 
 {% block welcome %}
-    <div class="flex-center">
-        <h1 class="h1 mw-50 center-text">Hi {{ name }}! Check out one of our tools to get started!</h1>
-    </div>
+    <h1 class="h1 mw-50 center-text">Hi {{ name }}! Check out one of our tools to get started!</h1>
 {% endblock %}
 
 {% block main %}
-    <div class="flex-center section-container">
-        <div class="card-primary flex-center">
-            <h1 class="h1 bold card-title">Loans</h1>
-            <ul class="menu flex-center h3">
-                <li class="menu-item">
-                    <a href="/manage-loans" class="menu-button">Manage loans</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Simulate payments</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Add payments</a>
-                </li>
-            </ul>
-        </div>
-        <div class="card-primary flex-center">
-            <h1 class="h1 bold card-title">Budget</h1>
-            <ul class="menu flex-center h3">
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Manage budget</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Add income</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Add expense</a>
-                </li>
-            </ul>
-        </div>
-        <div class="card-primary flex-center">
-            <h1 class="h1 bold card-title">Progress</h1>
-            <ul class="menu flex-center h3">
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Check progress</a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-button">Plan ahead</a>
-                </li>
-            </ul>
-        </div>
+    <div class="card-primary flex-center">
+        <h1 class="h1 bold card-title">Loans</h1>
+        <ul class="menu flex-center h3">
+            <li class="menu-item">
+                <a href="/manage-loans" class="menu-button">Manage loans</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-button">Simulate payments</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-button">Add payments</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-primary flex-center">
+        <h1 class="h1 bold card-title">Budget</h1>
+        <ul class="menu flex-center h3">
+            <li class="menu-item">
+                <a href="#" class="menu-button">Manage budget</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-button">Add income</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-button">Add expense</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-primary flex-center">
+        <h1 class="h1 bold card-title">Progress</h1>
+        <ul class="menu flex-center h3">
+            <li class="menu-item">
+                <a href="#" class="menu-button">Check progress</a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-button">Plan ahead</a>
+            </li>
+        </ul>
     </div>
 {% endblock %}

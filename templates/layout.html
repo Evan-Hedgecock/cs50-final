@@ -19,25 +19,34 @@
 </head>
 
 <body>
+    <!-- Header -->
     {% if session["user_id"] %} 
-    <div class="header flex-center">    
+    <div class="header flex-center">
     {% else %}
     <div class="header login-header flex-center"> 
     {% endif %}  
-
     {% block header %}{% endblock %}  
+    </div>
 
-    </div>
+    <!-- Main -->
     <div class="main">
-    {% block welcome %}{% endblock %}
-    
-    <div id="flashed-messages-container"></div>
-        {% block main %}
-            {% block sidebar %}
+
+        <div class="welcome">
+        {% block welcome %}{% endblock %}
+        </div>
+        
+        <div id="flashed-messages-container"></div>
+        <div class="section-container">
+            {% block main %}
+                {% block sidebar %}
+                {% endblock %}
+                {% block main_content %}
+                {% endblock %}
             {% endblock %}
-            
-        {% endblock %}
+        </div>
     </div>
+    
+    <!-- Footer -->
     <footer>
         <p>Wisp by Evan Hedgecock</p>
     </footer>
