@@ -1,17 +1,17 @@
 import os
 
+from datetime import date, timedelta
+from dotenv_vault import load_dotenv
 from flask import Flask, flash, get_flashed_messages, redirect, render_template, url_for, request, session, g
 from flask_session import Session
-from werkzeug.security import check_password_hash, generate_password_hash
-from dotenv_vault import load_dotenv
-import sqlalchemy as sa
-from sqlalchemy import Integer, String, insert, select
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Integer, String, insert, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.exc import IntegrityError
 from typing import List
+from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import login_required, usd, percent, decimal
+from helpers import decimal, login_required, percent, usd  
 
 load_dotenv()
 
@@ -49,7 +49,8 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    loans = relationship('Loans', back_populates='user', cascade='all, delete-orphan')
+    loans = db.relationship('Loans', back_populates='user', cascade='all, delete-orphan')
+    simulated = db.relationship('Simulated', back_populates='user', cascade='all, delete-orphan')
 
 class Loans(db.Model):
     __tablename__ = 'loans'
@@ -59,7 +60,19 @@ class Loans(db.Model):
     interest = db.Column(db.Integer, nullable=False)
     monthly_interest = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = relationship('User', back_populates='loans')
+    user = db.relationship('User', back_populates='loans')
+    simulated = db.relationship('Simulated', back_populates='loans', cascade='all, delete-orphan')
+
+class Simulated(db.Model):
+    __tablename__ = 'simulated'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(50), nullable=False)
+    balance = db.Column(db.Integer, nullable=False)
+    loan_id = db.Column(db.Integer, db.ForeignKey('loans.id'))
+    loans = db.relationship('Loans', back_populates='simulated')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', back_populates='simulated')
+
 
 with app.app_context():
     db.create_all()
@@ -350,6 +363,20 @@ def simulate_payments():
     error = False
     loans = get_loans(session["user_id"])
 
+    # Create sim_loans dict, get balance and interest balance of all loans
+    sim_loans = dict()
+    balance = 0
+    interest_balance = 0
+    for loan in loans:
+        sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": loan.monthly_interest, "balance": loan.amount}
+        balance += loan.amount
+        interest_balance += loan.monthly_interest
+
+
+# Testing strategies here
+    
+# End testing strategies
+
     if request.method == "GET":
         return render_template("simulate-payments.html", usd=usd, loans=loans, percent=percent, total=get_total(loans), interest=get_interest(loans), decimal=decimal)
    
@@ -358,17 +385,17 @@ def simulate_payments():
             flash("All fields required", "danger")
             return redirect("/simulate-payments")
 
-        frequency = request.form.get("simulate-frequency")
-        strategy = request.form.get("simulate-strategy")
-
+        sim_frequency = int(request.form.get("simulate-frequency"))
+        sim_strategy = request.form.get("simulate-strategy")
+        
         try:
-            amount = float(request.form.get("simulate-amount"))
+            sim_payment = float(request.form.get("simulate-amount"))
         except ValueError:
             flash("Amount must be number", "danger")
             error = True
             
         try:
-            duration = float(request.form.get("simulate-duration"))
+            sim_duration = int(request.form.get("simulate-duration"))
         except ValueError:
             flash("Duration must be number", "danger")
             error = True
@@ -377,14 +404,62 @@ def simulate_payments():
             return redirect("/simulate-payments")
 
         # Perform different payment calculations based on strategy
-        if strategy == "avalanche":
-            pass
-        if strategy == "snowball":
-            pass
-        if strategy == "weighted":
-            pass
-            
+        # Each strategy should give initial payment amounts for each loan
+        if sim_strategy == "avalanche":
+            weeks_per_payment = 4 / sim_frequency
+            weeks_passed = 0
 
+            # Create first set of rows of simulated table with initial loan amounts
+            for id, loan in list(sim_loans.items()):
+                simulated_loan = Simulated(date=date.today(), balance=loan["balance"], loan_id=id, user_id=session["user_id"])
+                db.session.add(simulated_loan)
+                # db.session.commit()
+
+            # For every month in duration
+            for m in range(sim_duration):
+                # For every payment in that month
+                for p in range(sim_frequency):
+                    payment = sim_payment
+                    # Update dictionary with payment amounts, monthly interest, and balance according to loan id
+                    highest_interest = 0
+                    for id, loan in list(sim_loans.items()):
+                        # Set initial payment amount to whatever monthly interest is
+                        loan["payment_amount"] = loan["monthly_interest"]
+
+                        # Subtract that loans payment amount from total payment
+                        payment -= loan["payment_amount"]
+
+                        # Update loans balance based on payment amount
+                        loan["balance"] -= loan["payment_amount"]
+
+                        # Update monthly interest on paid down balance
+                        loan["monthly_interest"] = ((loan["interest"] / 100) * loan["balance"]) / 12
+
+                        # Update highest interest loan
+                        if loan['monthly_interest'] > highest_interest:
+                            highest_interest = loan['monthly_interest']
+                            highest_interest_id = id
+
+                    # Make additional payment to highest interest loan and update
+                    highest_loan = sim_loans[highest_interest_id]
+                    highest_loan["payment_amount"] += payment
+                    highest_loan["balance"] -= payment
+
+
+                    # Figure out payment date
+                    weeks_passed += weeks_per_payment
+                    payment_date = date.today() + timedelta(weeks=weeks_passed)
+                    print(f"Payment date: {payment_date}")
+                    # Add updated simulated loans to table
+                    for id, loan in list(sim_loans.items()):
+                        simulated_loan = Simulated(date=payment_date, balance=loan["balance"], loan_id=id, user_id=session["user_id"])
+                        db.session.add(simulated_loan)
+            db.session.commit()
+
+        if sim_strategy == "snowball":
+            pass
+        if sim_strategy == "weighted":
+            pass
         return redirect("/simulate-payments")
 
 if __name__ == "__main__":
