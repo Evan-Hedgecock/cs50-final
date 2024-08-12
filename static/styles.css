@@ -521,7 +521,7 @@ footer {
     justify-content: center;
     width: 60%;
     height: 100%; */
-    background-image: linear-gradient(to bottom, var(--purple), var(--pink));
+    /* background-image: linear-gradient(to bottom, var(--purple), var(--pink)); */
     border-radius: var(--button-curve);
     flex: 1 1 auto;
     margin: 20px 20px;

@@ -70,6 +70,7 @@ class Simulated(db.Model):
     date = db.Column(db.String(50), nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     loan_id = db.Column(db.Integer, db.ForeignKey('loans.id'))
+    label = db.Column(db.String(50), nullable=False)
     loans = db.relationship('Loans', back_populates='simulated')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='simulated')
@@ -371,14 +372,12 @@ def simulate_payments():
     balance = 0
     interest_balance = 0
     for loan in loans:
-        sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": loan.monthly_interest, "balance": loan.amount}
+        sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": loan.monthly_interest, "balance": loan.amount, "name": loan.name}
         balance += loan.amount
         interest_balance += loan.monthly_interest
 
 
 # Testing strategies here
-    simmed_loans = db.session.scalars(select(Simulated).where(Simulated.user_id == session["user_id"]))
-    sim_table_to_dict(simmed_loans)
 # End testing strategies
 
     if request.method == "GET":
@@ -406,7 +405,7 @@ def simulate_payments():
             
         if error:
             return redirect("/simulate-payments")
-
+        delete_simulated()
         # Perform different payment calculations based on strategy
         # Each strategy should give initial payment amounts for each loan
         if sim_strategy == "avalanche":
@@ -415,7 +414,9 @@ def simulate_payments():
 
             # Create first set of rows of simulated table with initial loan amounts
             for id, loan in list(sim_loans.items()):
-                simulated_loan = Simulated(date=date.today(), balance=loan["balance"], loan_id=id, user_id=session["user_id"])
+                print(loan)
+                print(loan["name"])
+                simulated_loan = Simulated(date=date.today(), balance=loan["balance"], loan_id=id, label=loan["name"], user_id=session["user_id"])
                 db.session.add(simulated_loan)
                 # db.session.commit()
 
@@ -453,10 +454,10 @@ def simulate_payments():
                     # Figure out payment date
                     weeks_passed += weeks_per_payment
                     payment_date = date.today() + timedelta(weeks=weeks_passed)
-                    print(f"Payment date: {payment_date}")
+                    # print(f"Payment date: {payment_date}")
                     # Add updated simulated loans to table
                     for id, loan in list(sim_loans.items()):
-                        simulated_loan = Simulated(date=payment_date, balance=loan["balance"], loan_id=id, user_id=session["user_id"])
+                        simulated_loan = Simulated(date=payment_date, balance=loan["balance"], label=loan["name"], loan_id=id, user_id=session["user_id"])
                         db.session.add(simulated_loan)
             db.session.commit()
 
@@ -558,10 +559,28 @@ def delete_simulated():
 def sim_table_to_dict(sim_table):
     sim_dict = dict()
     for sim in sim_table:
-        sim_dict[sim.id] = ({"loan_id": sim.loan_id, "date": sim.date, "balance": sim.balance})
+        print(sim.label)
+        sim_dict[sim.id] = ({"date": sim.date, "balance": sim.balance, "label": sim.label})
+
     
     json_str = json.dumps(sim_dict, indent=4)
+    json_dict = jsonify(sim_dict)
     print(json_str)
-    jsonified_dict = jsonify(sim_dict)
-    print(jsonified_dict)
+    return json_dict
+
+@app.route("/retrieve-sim-data")
+@login_required
+def retrieve_sim_data():
+    simmed_loans = db.session.scalars(select(Simulated).where(Simulated.user_id == session["user_id"]))
+    sim_dict = sim_table_to_dict(simmed_loans)
+
     return sim_dict
+
+@app.route("/retrieve-loans")
+@login_required
+def retrieve_loans():
+    loans = db.session.scalars(select(Loans.name).where(Loans.user_id == session["user_id"]))
+    name_list = []
+    for name in loans:
+        name_list.append(name)    
+    return name_list     
