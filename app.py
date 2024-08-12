@@ -1,12 +1,13 @@
 import os
+import json
 
 from datetime import date, timedelta
 from dotenv_vault import load_dotenv
-from flask import Flask, flash, get_flashed_messages, redirect, render_template, url_for, request, session, g
+from flask import Flask, flash, get_flashed_messages, jsonify, redirect, render_template, url_for, request, session, g
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, insert, select
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, class_mapper, mapped_column, relationship
 from sqlalchemy.exc import IntegrityError
 from typing import List
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -374,7 +375,8 @@ def simulate_payments():
 
 
 # Testing strategies here
-    
+    simmed_loans = db.session.scalars(select(Simulated).where(Simulated.user_id == session["user_id"]))
+    sim_table_to_dict(simmed_loans)
 # End testing strategies
 
     if request.method == "GET":
@@ -543,3 +545,21 @@ def set_form_name(form_name):
 
 def update_monthly_interest(loan):
     loan.monthly_interest = (loan.amount * (loan.interest / 100)) / 12
+
+def delete_simulated():
+    simulated_loans = db.session.scalars(select(Simulated).where(Simulated.user_id == session["user_id"]))
+    for loan in simulated_loans:
+        print(loan)
+        db.session.delete(loan)
+    db.session.commit()
+
+def sim_table_to_dict(sim_table):
+    sim_dict = dict()
+    for sim in sim_table:
+        sim_dict[sim.id] = ({"loan_id": sim.loan_id, "date": sim.date, "balance": sim.balance})
+    
+    json_str = json.dumps(sim_dict, indent=4)
+    print(json_str)
+    jsonified_dict = jsonify(sim_dict)
+    print(jsonified_dict)
+    return sim_dict
