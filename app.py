@@ -319,8 +319,10 @@ def delete_loan():
             return redirect("/delete-loan")
         
         delete_loan_id = request.form.get("selected-option-id")
+        print(f"Id: {delete_loan_id}")
 
         delete_loan = db.session.scalar(select(Loans).where(Loans.id == delete_loan_id))
+        print(delete_loan)
         db.session.delete(delete_loan)
         db.session.commit()
         flash(f"{delete_loan.name} deleted successfully", "success")

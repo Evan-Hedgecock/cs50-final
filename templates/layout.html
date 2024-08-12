@@ -15,10 +15,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
     <title>Wisp: {% block title %}{% endblock %}</title>
-    
 </head>
 
 <body>
+    <script src="{{url_for('static', filename='js/main.js') }}"></script>
+
     <!-- Header -->
     {% if session["user_id"] %} 
     <div class="header flex-center">
@@ -50,147 +51,20 @@
             <p>Wisp by Evan Hedgecock</p>
         </footer>
     </div>
-    
-    
-    
 
-    <script>
-        function dropDown() {
-            document.getElementById("profile-dropdown").classList.toggle("show");
-            document.getElementById("profile-button").classList.toggle("ignore");
-            }
+    <script> 
+    // Check for flashed messages and form name
+    document.addEventListener("DOMContentLoaded", () => {
+        const flashedMessages = {{ get_flashed_messages(with_categories=True) | tojson }};
+        const formName = "{{ session.pop('form_name', '') }}"
+        console.log("Checking for flashes from:", formName);
         
-        function toggleSidebar() {
-            document.getElementById('s-m').classList.toggle('visible');
-            document.getElementById('s-m').classList.toggle('collapse');
-            }
-    
-        function openAddForm() {
-            document.getElementById('add-loan-form-container').classList.toggle('visible');
-            document.getElementById('add-loan-form-container').classList.toggle('collapse');
-            toggleSidebar()
-
-            }
-
-        function openEditForm() {
-            document.getElementById('edit-loan-form-container').classList.toggle('visible');
-            document.getElementById('edit-loan-form-container').classList.toggle('collapse');
-            toggleSidebar()
-        }
-
-        function openPaymentForm() {
-            document.getElementById('make-payment-form-container').classList.toggle('visible');
-            document.getElementById('make-payment-form-container').classList.toggle('collapse');
-            toggleSidebar()
-        }
-
-        function goBack(openForm) {
-            openForm
-        }
-        
-        function onlyNumberKey(evt) {
-            // Only ASCII character in that range allowed
-            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-            console.log(ASCIICode)
-            if ((ASCIICode <= 57 && ASCIICode >= 48) || ASCIICode == 46) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        function formatToUSD(value) {
-            let number = parseFloat(value);
-            if (isNaN(number)) {
-                return "";
-            }
-            // Format number with commas and two decimal places
-            return "$" + number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function formatToPercentage(value) {
-            let number = parseFloat(value);
-            if (isNaN(number)) {
-                return "";
-            }
-            // Format number to two decimal places with percent sign
-            return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
-        }
-
-        function formatInput(event) {
-            const input = event.target;
-            const value = input.value.replace(/,/g, ''); // Remove commas for proper formatting
-            const formatType = input.dataset.format; // Determine format type using data attribute
-
-            let formattedValue;
-            if (formatType === "usd") {
-                formattedValue = formatToUSD(value);
-            } else if (formatType === "percentage") {
-                formattedValue = formatToPercentage(value);
-            }
-
-            // Find the corresponding <span> element to update
-            const formattedSpan = input.nextElementSibling;
-            formattedSpan.innerText = formattedValue;
-        }
-        
-        function displayFlashedMessages(messages, formName) {
-            console.log("When flashed, formName =", formName);
+        if (flashedMessages.length > 0 && formName) {
+            console.log("Displaying flashed message:", flashedMessages, "\nFor formName:", formName);
             
-            const container = document.getElementById("flashed-messages-container");
-            messages.forEach(([category, message]) => {
-                console.log("Message: " + message + "\n" + "Category: " + category);
-                
-                const messageElement = document.createElement("div");
-                messageElement.className = `flashes ${category}`;
-                messageElement.innerText = message;
-                container.appendChild(messageElement);
-
-                // Position the message relative to the form
-                const form = document.getElementById(formName);
-                form.parentNode.insertBefore(container, form); // Insert the container before the form
-                console.log("Form name: " + formName)
-                const formRect = form.getBoundingClientRect();
-                console.log(formRect);
-                console.log("formRect width: " + (formRect.width / 2) )
-                
-                messageElement.style.bottom = formRect.top + 'px';
-                messageElement.style.left = formRect.left + 'px'; 
-                messageElement.style.width = formRect.width + 'px';
-                console.log("messageElement width: " + messageElement.getBoundingClientRect().width)
-            });
+            displayFlashedMessages(flashedMessages, formName);
         }
-
-        // Check for flashed messages and form name
-        document.addEventListener("DOMContentLoaded", () => {
-            const flashedMessages = {{ get_flashed_messages(with_categories=True) | tojson }};
-            const formName = "{{ session.pop('form_name', '') }}"
-            console.log("Checking for flashes from:", formName);
-            
-            if (flashedMessages.length > 0 && formName) {
-                console.log("Displaying flashed message:", flashedMessages, "\nFor formName:", formName);
-                
-                displayFlashedMessages(flashedMessages, formName);
-            }
-        });
-
-        function setSelectedOptionId(dropdown_id) {
-            var dropdown = document.getElementById(dropdown_id);
-            console.log("dropdown:", dropDown);
-            
-            var selectedOption = dropdown.options[dropdown.selectedIndex];
-            console.log("selected option:", selectedOption);
-            
-            var hiddenInput = document.getElementById("selected-option-id");
-            console.log("hidden input:", hiddenInput);
-            
-            hiddenInput.value = selectedOption.id;
-            console.log("hidden value:", hiddenInput.value);
-            
-        }
-
-    </script>
+    });</script>
 </body>
 
 </html>

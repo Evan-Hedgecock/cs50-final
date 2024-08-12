@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 
-{% block script %}{% endblock %}
+{% block script %}<script src="url_for">
+    document.addEventListener("DOMContentLoaded", function () {
+        myFunction()
+    })
+</script>{% endblock %}
 
 {% block header %}
 <ul class="nav-list flex-center">
