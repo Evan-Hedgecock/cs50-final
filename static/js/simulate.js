@@ -37,10 +37,10 @@ async function loadData() {
                         callback: function(value, index, ticks) {
                             return '$' + value;
                         }
+                    }
                 }
             }
         }
-      }
     }
       
 

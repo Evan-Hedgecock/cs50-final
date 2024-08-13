@@ -136,7 +136,6 @@ def progress():
 def login():
     session.clear()
     set_form_name("login-form")
-    print(f"Request method: {request.method}")
     if request.method == "POST":
         if not request.form.get("username"):
             flash("Enter username", "danger")
@@ -320,10 +319,8 @@ def delete_loan():
             return redirect("/delete-loan")
         
         delete_loan_id = request.form.get("selected-option-id")
-        print(f"Id: {delete_loan_id}")
 
         delete_loan = db.session.scalar(select(Loans).where(Loans.id == delete_loan_id))
-        print(delete_loan)
         db.session.delete(delete_loan)
         db.session.commit()
         flash(f"{delete_loan.name} deleted successfully", "success")
@@ -414,8 +411,6 @@ def simulate_payments():
 
             # Create first set of rows of simulated table with initial loan amounts
             for id, loan in list(sim_loans.items()):
-                print(loan)
-                print(loan["name"])
                 simulated_loan = Simulated(date=date.today(), balance=loan["balance"], loan_id=id, label=loan["name"], user_id=session["user_id"])
                 db.session.add(simulated_loan)
                 # db.session.commit()
@@ -430,12 +425,18 @@ def simulate_payments():
                     for id, loan in list(sim_loans.items()):
                         # Set initial payment amount to whatever monthly interest is
                         loan["payment_amount"] = loan["monthly_interest"]
+                        # If payment will bring loan under 0, just pay the balance
+                        if loan["balance"] - loan["payment_amount"] <= 0:
+                            loan["payment_amount"] = loan["balance"]                        
 
                         # Subtract that loans payment amount from total payment
                         payment -= loan["payment_amount"]
 
                         # Update loans balance based on payment amount
-                        loan["balance"] -= loan["payment_amount"]
+                        if loan["balance"] - loan["payment_amount"] >=0:
+                            loan["balance"] -= loan["payment_amount"]
+                        else:
+                            loan["balance"] = 0
 
                         # Update monthly interest on paid down balance
                         loan["monthly_interest"] = ((loan["interest"] / 100) * loan["balance"]) / 12
@@ -444,21 +445,49 @@ def simulate_payments():
                         if loan['monthly_interest'] > highest_interest:
                             highest_interest = loan['monthly_interest']
                             highest_interest_id = id
-
+                    
                     # Make additional payment to highest interest loan and update
                     highest_loan = sim_loans[highest_interest_id]
+                    
+                    # If payment will bring below balance, only pay balance
                     highest_loan["payment_amount"] += payment
-                    highest_loan["balance"] -= payment
+                    if highest_loan["balance"] - highest_loan["payment_amount"] >= 0:
+                        highest_loan["balance"] -= highest_loan["payment_amount"]
+                    else:
+                        payment = highest_loan["payment_amount"] - highest_loan["balance"]
+                        highest_loan["payment_amount"] = highest_loan["balance"]
+                        highest_loan["balance"] -= highest_loan["payment_amount"]
+    
+                    # If there's payment left over, pay off highest loans first until payment is 0
+                    highest_balance = 0
+                    while payment > 0:
+                        for id, loan in list(sim_loans.items()):
+                            if loan["balance"] > 0:
+                                if loan["balance"] > highest_balance:
+                                    highest_balance = loan["balance"]
+                                    highest_balance_id = id
+
+                        if  highest_balance_id != None:
+                            highest_leftover = sim_loans[highest_balance_id]
+                            if highest_leftover["balance"] - payment <= 0:
+                                highest_leftover["payment_amount"] = highest_leftover["balance"]
+                                payment - highest_leftover["payment_amount"]
+                            else:
+                                highest_leftover["payment_amount"] += payment
+                                payment = 0
+                        else:
+                            break
 
 
                     # Figure out payment date
                     weeks_passed += weeks_per_payment
                     payment_date = date.today() + timedelta(weeks=weeks_passed)
-                    # print(f"Payment date: {payment_date}")
                     # Add updated simulated loans to table
                     for id, loan in list(sim_loans.items()):
                         simulated_loan = Simulated(date=payment_date, balance=loan["balance"], label=loan["name"], loan_id=id, user_id=session["user_id"])
                         db.session.add(simulated_loan)
+            # for loan in list(sim_loans.items()):
+            #     loan["balance"] += loan["monthly_interest"]
             db.session.commit()
 
         if sim_strategy == "snowball":
@@ -552,20 +581,17 @@ def update_monthly_interest(loan):
 def delete_simulated():
     simulated_loans = db.session.scalars(select(Simulated).where(Simulated.user_id == session["user_id"]))
     for loan in simulated_loans:
-        print(loan)
         db.session.delete(loan)
     db.session.commit()
 
 def sim_table_to_dict(sim_table):
     sim_dict = dict()
     for sim in sim_table:
-        print(sim.label)
         sim_dict[sim.id] = ({"date": sim.date, "balance": sim.balance, "label": sim.label})
 
     
     json_str = json.dumps(sim_dict, indent=4)
     json_dict = jsonify(sim_dict)
-    print(json_str)
     return json_dict
 
 @app.route("/retrieve-sim-data")
