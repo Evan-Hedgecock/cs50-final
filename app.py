@@ -361,7 +361,6 @@ def make_payment():
 @login_required
 def simulate_payments():
     set_form_name("simulate-payments-form")
-    error = False
     loans = get_loans(session["user_id"])
 
     # Create sim_loans dict, get balance and interest balance of all loans
@@ -372,7 +371,6 @@ def simulate_payments():
         sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": loan.monthly_interest, "balance": loan.amount, "name": loan.name}
         balance += loan.amount
         interest_balance += loan.monthly_interest
-
 
 # Testing strategies here
 # End testing strategies
@@ -392,16 +390,19 @@ def simulate_payments():
             sim_payment = float(request.form.get("simulate-amount"))
         except ValueError:
             flash("Amount must be number", "danger")
-            error = True
+            return redirect("/simulate-payments")
             
         try:
             sim_duration = int(request.form.get("simulate-duration"))
         except ValueError:
             flash("Duration must be number", "danger")
-            error = True
-            
-        if error:
             return redirect("/simulate-payments")
+        if sim_duration <= 0:
+            flash("Enter 1 or more months", "danger")
+            return redirect("/simulate-payments")
+            
+        # if error:
+        #     return redirect("/simulate-payments")
         delete_simulated()
         # Perform different payment calculations based on strategy
         # Each strategy should give initial payment amounts for each loan
@@ -425,6 +426,10 @@ def simulate_payments():
                     for id, loan in list(sim_loans.items()):
                         # Set initial payment amount to whatever monthly interest is
                         loan["payment_amount"] = loan["monthly_interest"]
+                        if payment - loan["payment_amount"] < 0:
+                            flash("Payment must be greater than min payments", "warning")
+                            return redirect("/simulate-payments")
+
                         # If payment will bring loan under 0, just pay the balance
                         if loan["balance"] - loan["payment_amount"] <= 0:
                             loan["payment_amount"] = loan["balance"]                        
@@ -486,10 +491,11 @@ def simulate_payments():
                     for id, loan in list(sim_loans.items()):
                         simulated_loan = Simulated(date=payment_date, balance=loan["balance"], label=loan["name"], loan_id=id, user_id=session["user_id"])
                         db.session.add(simulated_loan)
-            # for loan in list(sim_loans.items()):
-            #     loan["balance"] += loan["monthly_interest"]
+            for id, loan in list(sim_loans.items()):
+                loan["balance"] += loan["monthly_interest"]
             db.session.commit()
 
+        # Expand
         if sim_strategy == "snowball":
             pass
         if sim_strategy == "weighted":
