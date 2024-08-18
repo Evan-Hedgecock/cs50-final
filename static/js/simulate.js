@@ -1,3 +1,8 @@
+Chart.defaults.color = '#FFFFFC80'
+Chart.defaults.font.size = '24'
+Chart.defaults.backgroundColor = '#FFFFFC'
+Chart.defaults.borderColor = '#FFFFFC30'
+
 async function loadData() {
     
     const sim_response = await fetch('/retrieve-sim-data');
