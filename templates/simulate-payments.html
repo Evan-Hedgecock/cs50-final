@@ -43,49 +43,4 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="{{ url_for('static', filename='js/simulate.js') }}"></script>
-<!-- <script>
-  const ctx = document.getElementById('simulate-payments-chart');
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-</script> -->
-    <!-- <table class="table h3">
-        <tr>
-            <th>Name</th>
-            <th>Balance</th>
-            <th>Interest rate</th>
-            <th>Monthly interest</th>
-        </tr>
-
-        {% if loans %}
-
-            {% for loan in loans %}
-            {% if loan.amount > 0 %}
-                <tr>
-                    <td>{{ loan.name }}</td>
-                    <td>{{ usd(loan.amount) }}</td>
-                    <td>{{ percent(loan.interest) }}</td>
-                    <td>{{ usd(loan.monthly_interest) }}</td>
-                </tr>
-            {% endif %}
-            {% endfor %}
-
-        {% endif %}
-    </table> -->
 {% endblock %}

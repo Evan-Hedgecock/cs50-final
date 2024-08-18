@@ -2,6 +2,7 @@ import os
 import json
 
 from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 from dotenv_vault import load_dotenv
 from flask import Flask, flash, get_flashed_messages, jsonify, redirect, render_template, url_for, request, session, g
 from flask_session import Session
@@ -69,6 +70,7 @@ class Simulated(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(50), nullable=False)
     balance = db.Column(db.Integer, nullable=False)
+    monthly_interest = db.Column(db.Integer, nullable=False)
     loan_id = db.Column(db.Integer, db.ForeignKey('loans.id'))
     label = db.Column(db.String(50), nullable=False)
     loans = db.relationship('Loans', back_populates='simulated')
@@ -368,7 +370,7 @@ def simulate_payments():
     balance = 0
     interest_balance = 0
     for loan in loans:
-        sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": loan.monthly_interest, "balance": loan.amount, "name": loan.name}
+        sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": round(loan.monthly_interest, 2), "balance": loan.amount, "name": loan.name}
         balance += loan.amount
         interest_balance += loan.monthly_interest
 
@@ -401,99 +403,63 @@ def simulate_payments():
             flash("Enter 1 or more months", "danger")
             return redirect("/simulate-payments")
             
-        # if error:
-        #     return redirect("/simulate-payments")
         delete_simulated()
-        # Perform different payment calculations based on strategy
-        # Each strategy should give initial payment amounts for each loan
-        if sim_strategy == "avalanche":
-            weeks_per_payment = 4 / sim_frequency
-            weeks_passed = 0
 
-            # Create first set of rows of simulated table with initial loan amounts
-            for id, loan in list(sim_loans.items()):
-                simulated_loan = Simulated(date=date.today(), balance=loan["balance"], loan_id=id, label=loan["name"], user_id=session["user_id"])
-                db.session.add(simulated_loan)
-                # db.session.commit()
+        sim_list = list(sim_loans.items())
 
-            # For every month in duration
-            for m in range(sim_duration):
-                # For every payment in that month
-                for p in range(sim_frequency):
-                    payment = sim_payment
-                    # Update dictionary with payment amounts, monthly interest, and balance according to loan id
-                    highest_interest = 0
-                    for id, loan in list(sim_loans.items()):
-                        # Set initial payment amount to whatever monthly interest is
-                        loan["payment_amount"] = loan["monthly_interest"]
-                        if payment - loan["payment_amount"] < 0:
-                            flash("Payment must be greater than min payments", "warning")
-                            return redirect("/simulate-payments")
-
-                        # If payment will bring loan under 0, just pay the balance
-                        if loan["balance"] - loan["payment_amount"] <= 0:
-                            loan["payment_amount"] = loan["balance"]                        
-
-                        # Subtract that loans payment amount from total payment
-                        payment -= loan["payment_amount"]
-
-                        # Update loans balance based on payment amount
-                        if loan["balance"] - loan["payment_amount"] >=0:
-                            loan["balance"] -= loan["payment_amount"]
-                        else:
-                            loan["balance"] = 0
-
-                        # Update monthly interest on paid down balance
-                        loan["monthly_interest"] = ((loan["interest"] / 100) * loan["balance"]) / 12
-
-                        # Update highest interest loan
-                        if loan['monthly_interest'] > highest_interest:
-                            highest_interest = loan['monthly_interest']
-                            highest_interest_id = id
+        # Every month:
+        for m in range(sim_duration):
+            # Add sim loans to table
+            d = date.today()
+            add_sim_data(sim_list, d + relativedelta(months=+m))
+            # add_sim_data(sim_loans, date.today() + timedelta(weeks=+(month * 4)))
+            # Make payments:
+            for payment in range(sim_frequency):
+                print(f"Payment #{payment + 1}")
+                funds = sim_payment
+                # Pay monthly interest / payments per month to all loans
+                for id, loan in sim_list:
+                    paid = (loan["monthly_interest"] // sim_frequency)
+                    print(f"Paid = {paid}")
+                    funds -= paid
+                    if funds < 0:
+                        print(f"Funds = {funds}")
+                        flash("Payment must meet minimum payment", "danger")
+                        return redirect("/simulate-payments")
+                    loan["balance"] -= paid
+                    loan["monthly_interest"] = (loan["balance"] * (loan["interest"] / 100)) / 12
                     
-                    # Make additional payment to highest interest loan and update
-                    highest_loan = sim_loans[highest_interest_id]
-                    
-                    # If payment will bring below balance, only pay balance
-                    highest_loan["payment_amount"] += payment
-                    if highest_loan["balance"] - highest_loan["payment_amount"] >= 0:
-                        highest_loan["balance"] -= highest_loan["payment_amount"]
+                # While payment is greater than 0
+                while True:
+                    # Get highest interest loan
+                    highest_id = get_highest_interest_id(sim_list)
+                    if highest_id == None:
+                        break
+                    highest_loan = sim_loans[highest_id]
+                    print(f"Highest loan = {highest_loan}\nBalance = {highest_loan["balance"]}\n")
+                    # If highest interest loan's balance is less than payment amount
+                    if highest_loan["balance"] < funds:
+                        paid = highest_loan["balance"]
+                        # Just pay balance and get next highest interest loan
+                        highest_loan["balance"] -= paid
+                        highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
+                        funds -= paid
+                    # Else put all of that payment towards the loan and go to next payment
                     else:
-                        payment = highest_loan["payment_amount"] - highest_loan["balance"]
-                        highest_loan["payment_amount"] = highest_loan["balance"]
-                        highest_loan["balance"] -= highest_loan["payment_amount"]
-    
-                    # If there's payment left over, pay off highest loans first until payment is 0
-                    highest_balance = 0
-                    while payment > 0:
-                        for id, loan in list(sim_loans.items()):
-                            if loan["balance"] > 0:
-                                if loan["balance"] > highest_balance:
-                                    highest_balance = loan["balance"]
-                                    highest_balance_id = id
+                        paid = funds
+                        highest_loan["balance"] -= paid
+                        highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
 
-                        if  highest_balance_id != None:
-                            highest_leftover = sim_loans[highest_balance_id]
-                            if highest_leftover["balance"] - payment <= 0:
-                                highest_leftover["payment_amount"] = highest_leftover["balance"]
-                                payment - highest_leftover["payment_amount"]
-                            else:
-                                highest_leftover["payment_amount"] += payment
-                                payment = 0
-                        else:
-                            break
-
-
-                    # Figure out payment date
-                    weeks_passed += weeks_per_payment
-                    payment_date = date.today() + timedelta(weeks=weeks_passed)
-                    # Add updated simulated loans to table
-                    for id, loan in list(sim_loans.items()):
-                        simulated_loan = Simulated(date=payment_date, balance=loan["balance"], label=loan["name"], loan_id=id, user_id=session["user_id"])
-                        db.session.add(simulated_loan)
-            for id, loan in list(sim_loans.items()):
-                loan["balance"] += loan["monthly_interest"]
+                        break
+                    if highest_loan["balance"] <= 0:
+                        print("Paid off")
+                        break
             db.session.commit()
+
+            # End of month add interest
+            for id, loan in sim_list:
+                loan["balance"] += loan["monthly_interest"]
+        
 
         # Expand
         if sim_strategy == "snowball":
@@ -616,3 +582,27 @@ def retrieve_loans():
     for name in loans:
         name_list.append(name)    
     return name_list     
+
+def get_highest_interest_id(loan_list):
+    highest_id = None
+    highest_interest = 0
+    for id, loan in loan_list:
+        if loan["monthly_interest"] > highest_interest:
+            highest_id = id
+            highest_interest = loan["monthly_interest"]
+    # print(highest_id)
+    return highest_id
+
+def add_sim_data(loan_list, date):
+    for id, loan in loan_list:
+        simulated_loan = Simulated(date=date, balance=round(loan["balance"], 2), monthly_interest=loan["monthly_interest"], loan_id=id, label=loan["name"], user_id=session["user_id"])
+        db.session.add(simulated_loan)
+
+
+# Return false if can't calculate payments
+def calculate_sim_payments(sim_loans, strategy, payment, frequency):
+    pass
+
+def make_sim_payments(sim_list):
+    pass
+        

@@ -1,6 +1,3 @@
-// Chart.defaults.elements.point.radius = 5;
-Chart.defaults.elements.line.tension = 0.2;
-
 async function loadData() {
     
     const sim_response = await fetch('/retrieve-sim-data');
