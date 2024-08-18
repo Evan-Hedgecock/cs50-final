@@ -413,7 +413,7 @@ def simulate_payments():
             d = date.today()
             add_sim_data(sim_list, d + relativedelta(months=+m))
             # add_sim_data(sim_loans, date.today() + timedelta(weeks=+(month * 4)))
-            # Make payments:
+            # Make min payments:
             for payment in range(sim_frequency):
                 print(f"Payment #{payment + 1}")
                 funds = sim_payment
@@ -428,32 +428,10 @@ def simulate_payments():
                         return redirect("/simulate-payments")
                     loan["balance"] -= paid
                     loan["monthly_interest"] = (loan["balance"] * (loan["interest"] / 100)) / 12
-                    
-                # While payment is greater than 0
-                while True:
-                    # Get highest interest loan
-                    highest_id = get_highest_interest_id(sim_list)
-                    if highest_id == None:
-                        break
-                    highest_loan = sim_loans[highest_id]
-                    print(f"Highest loan = {highest_loan}\nBalance = {highest_loan["balance"]}\n")
-                    # If highest interest loan's balance is less than payment amount
-                    if highest_loan["balance"] < funds:
-                        paid = highest_loan["balance"]
-                        # Just pay balance and get next highest interest loan
-                        highest_loan["balance"] -= paid
-                        highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
-                        funds -= paid
-                    # Else put all of that payment towards the loan and go to next payment
-                    else:
-                        paid = funds
-                        highest_loan["balance"] -= paid
-                        highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
-
-                        break
-                    if highest_loan["balance"] <= 0:
-                        print("Paid off")
-                        break
+                
+                if sim_strategy == "avalanche":
+                    avalanche(sim_loans, funds)
+    
             db.session.commit()
 
             # End of month add interest
@@ -605,4 +583,32 @@ def calculate_sim_payments(sim_loans, strategy, payment, frequency):
 
 def make_sim_payments(sim_list):
     pass
+
+def avalanche(sim_loans, funds):
+    sim_list = list(sim_loans.items())
+    # While payment is greater than 0
+    while True:
+        # Get highest interest loan
+        highest_id = get_highest_interest_id(sim_list)
+        if highest_id == None:
+            break
+        highest_loan = sim_loans[highest_id]
+        print(f"Highest loan = {highest_loan}\nBalance = {highest_loan["balance"]}\n")
+        # If highest interest loan's balance is less than payment amount
+        if highest_loan["balance"] < funds:
+            paid = highest_loan["balance"]
+            # Just pay balance and get next highest interest loan
+            highest_loan["balance"] -= paid
+            highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
+            funds -= paid
+        # Else put all of that payment towards the loan and go to next payment
+        else:
+            paid = funds
+            highest_loan["balance"] -= paid
+            highest_loan["monthly_interest"] = (highest_loan["balance"] * (highest_loan["interest"] / 100)) / 12
+            break
+
+        if highest_loan["balance"] <= 0:
+            print("Paid off")
+            break
         
