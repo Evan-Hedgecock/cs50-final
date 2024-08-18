@@ -419,7 +419,7 @@ def simulate_payments():
                 funds = sim_payment
                 # Pay monthly interest / payments per month to all loans
                 for id, loan in sim_list:
-                    paid = (loan["monthly_interest"] // sim_frequency)
+                    paid = (loan["monthly_interest"] / sim_frequency)
                     print(f"Paid = {paid}")
                     funds -= paid
                     if funds < 0:
