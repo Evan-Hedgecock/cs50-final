@@ -53,6 +53,7 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
     loans = db.relationship('Loans', back_populates='user', cascade='all, delete-orphan')
     simulated = db.relationship('Simulated', back_populates='user', cascade='all, delete-orphan')
+    plans = db.relationship('Plans', back_populates='user')
 
 class Loans(db.Model):
     __tablename__ = 'loans'
@@ -82,11 +83,13 @@ class Plans(db.Model):
     __tablename__ = 'plans'
     # Plan table should have the id of each plan, plan name, start date, end date
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(50), nullable=False, unique=True)
     start_date = db.Column(db.String(50), nullable=False)
     end_date = db.Column(db.String(50), nullable=False)
     # Should merge with a table that has all payments
     plan_payments = db.relationship('Plan_payments', back_populates='plans', cascade='all, delete-orphan')
+    user = db.relationship('User', back_populates='plans')
 
 class Plan_payments(db.Model):
     __tablename__ = 'plan_payments'
