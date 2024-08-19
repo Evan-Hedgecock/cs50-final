@@ -76,6 +76,29 @@ class Simulated(db.Model):
     loans = db.relationship('Loans', back_populates='simulated')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='simulated')
+    plan_payments = db.relationship('Plan_payments', back_populates='simulated')
+
+class Plans(db.Model):
+    __tablename__ = 'plans'
+    # Plan table should have the id of each plan, plan name, start date, end date
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    start_date = db.Column(db.String(50), nullable=False)
+    end_date = db.Column(db.String(50), nullable=False)
+    # Should merge with a table that has all payments
+    plan_payments = db.relationship('Plan_payments', back_populates='plans', cascade='all, delete-orphan')
+
+class Plan_payments(db.Model):
+    __tablename__ = 'plan_payments'
+    # plan payments should have id of each payment, which plan id its related to, loan id its making payment to related to the simulated table
+    # date of payment, and payment amount
+    id = db.Column(db.Integer, primary_key=True)
+    plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'))
+    loan_id = db.Column(db.Integer, db.ForeignKey('simulated.loan_id'))
+    date = db.Column(db.String(50), nullable=False)
+    payment = db.Column(db.Integer, nullable=False)
+    plans = db.relationship('Plans', back_populates='plan_payments')
+    simulated = db.relationship('Simulated', back_populates='plan_payments')
 
 
 with app.app_context():
