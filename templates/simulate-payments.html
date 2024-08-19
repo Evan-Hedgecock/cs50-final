@@ -25,14 +25,20 @@
         <select type="text" class="text-box" id="simulate-strategy" name="simulate-strategy">
             <option selected disabled class="text-box">Strategy</option>
             <option value="avalanche" class="text-box">Avalanche</option>
-            <option value="weighted" class="text-box">Weighted</option>
-            <option value="snowball" class="text-box">Snowball</option>
+            <!-- <option value="weighted" class="text-box">Weighted</option>
+            <option value="snowball" class="text-box">Snowball</option> -->
         </select>
 
         <label class="form-label">Duration</label>
         <input type="text" class="text-box" id="simulate-duration" name="simulate-duration" placeholder="Duration" onkeypress="return onlyNumberKey(event)">
 
-        <input type="submit" value="Simulate" class="button">
+        <div class="button-container">
+          <input type="submit" value="Simulate" class="button">
+
+          <button class="button">
+            <a href="/save-plan">Save Plan</a>
+          </button>
+        </div>
     </form>
 </div>
 {% endblock %}

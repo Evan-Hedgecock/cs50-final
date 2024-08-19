@@ -517,10 +517,6 @@ footer {
 
 .main-content {
     display: flex;
-    /* align-items: start;
-    justify-content: center;
-    width: 60%;
-    height: 100%; */
     background-image: linear-gradient(to bottom, var(--purple), var(--pink));
     border-radius: var(--button-curve);
     flex: 1 1 auto;
@@ -529,8 +525,11 @@ footer {
 }
 
 .table {
-    text-align: center;
-    justify-content: start;
+    display: flex;
+    height: 100%;
+    align-items: start;
+    text-align: center;  
+    justify-content: center;
     padding: 20px;
     width: 100%;
 }
@@ -602,4 +601,21 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
+}
+
+.text-box:focus {
+    color: var(--dark-purple50);
+}
+
+.button-container {
+    display: flex;
+    flex-flow: column wrap;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.button-container .button {
+    margin: 10px 0px;
 }
