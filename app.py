@@ -64,7 +64,9 @@ class Loans(db.Model):
     monthly_interest = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='loans')
-    simulated = db.relationship('Simulated', back_populates='loans', cascade='all, delete-orphan')
+    simulated = db.relationship('Simulated', back_populates='loans')
+    plan_payments = db.relationship('Plan_payments', back_populates='loans')
+
 
 class Simulated(db.Model):
     __tablename__ = 'simulated'
@@ -77,7 +79,6 @@ class Simulated(db.Model):
     loans = db.relationship('Loans', back_populates='simulated')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', back_populates='simulated')
-    plan_payments = db.relationship('Plan_payments', back_populates='simulated')
 
 class Plans(db.Model):
     __tablename__ = 'plans'
@@ -97,11 +98,11 @@ class Plan_payments(db.Model):
     # date of payment, and payment amount
     id = db.Column(db.Integer, primary_key=True)
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'))
-    loan_id = db.Column(db.Integer, db.ForeignKey('simulated.loan_id'))
+    loan_id = db.Column(db.Integer, db.ForeignKey('loans.id'))
     date = db.Column(db.String(50), nullable=False)
     payment = db.Column(db.Integer, nullable=False)
     plans = db.relationship('Plans', back_populates='plan_payments')
-    simulated = db.relationship('Simulated', back_populates='plan_payments')
+    loans = db.relationship('Loans', back_populates='plan_payments')
 
 
 with app.app_context():
@@ -393,12 +394,8 @@ def simulate_payments():
 
     # Create sim_loans dict, get balance and interest balance of all loans
     sim_loans = dict()
-    balance = 0
-    interest_balance = 0
     for loan in loans:
         sim_loans[loan.id] = {"interest": loan.interest, "monthly_interest": round(loan.monthly_interest, 2), "balance": loan.amount, "name": loan.name}
-        balance += loan.amount
-        interest_balance += loan.monthly_interest
 
 # Testing strategies here
 # End testing strategies
@@ -458,11 +455,13 @@ def simulate_payments():
                 if sim_strategy == "avalanche":
                     avalanche(sim_loans, funds)
     
-            db.session.commit()
+            
 
             # End of month add interest
             for id, loan in sim_list:
                 loan["balance"] += loan["monthly_interest"]
+
+            db.session.commit()
         
 
         # Expand
@@ -638,3 +637,5 @@ def avalanche(sim_loans, funds):
             print("Paid off")
             break
         
+
+# Create function to calculate length of time till all loans paid off
